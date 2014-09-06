@@ -10,7 +10,7 @@ using GestureRecognition;
 using System.Net;
 using System.Net.Sockets;
 
-namespace GestureMapper
+namespace GestureController
 {
     public class GestureToActionMapper
     {
