@@ -40,6 +40,7 @@ namespace GestureController
 
         private Communicator communicator;
         private GestureToActionMapper mapper;
+        private SkeletonTracker _tracker;
         private GestureRecognizer _recognizer;
         private KinectSensor _sensor;
         private byte[] _depthFrame32;
@@ -80,7 +81,7 @@ namespace GestureController
 
         private void ConnectToServer(object sender, RoutedEventArgs e)
         {
-            if (!communicator.IsConnected)
+            if (!communicator.IsConnected && !communicator.IsConnecting)
             {
                 Logger.Debug("Attempting to connect to server");
                 try
@@ -89,7 +90,22 @@ namespace GestureController
                     if (IPAddress.TryParse(ServerIP.Text, out address))
                     {
                         int port = int.Parse(ServerPort.Text);
-                        communicator.StartClient(address, port);
+                        Task.Factory.StartNew(() =>
+                        {
+                            communicator.StartClient(address, port);
+
+                            if (communicator.IsConnected)
+                            {
+                                _Status.Text = "Connected to " + ServerIP.Text + ":" + ServerPort.Text;
+                                Logger.Info("Successfully connected to server");
+                            }
+                            else
+                            {
+                                ServerIP.IsEnabled = true;
+                                ServerPort.IsEnabled = true;
+                                Logger.Info("Unsuccessful connection attempt");
+                            }
+                        });
                     }
                     else
                     {
@@ -109,19 +125,8 @@ namespace GestureController
                     Logger.Fatal("Exception while connecting to server", exception);
                 }
 
-                if (communicator.IsConnected)
-                {
-                    _Status.Text = "Connected to " + ServerIP.Text + ":" + ServerPort.Text;
-                    ServerIP.IsEnabled = false;
-                    ServerIP.IsEnabled = false;
-                    Logger.Info("Successfully connected to server");
-                }
-                else
-                {
-                    Logger.Info("Unsuccessful connection attempt");
-                }
             }
-            else
+            else if(!communicator.IsConnected)
             {
                 communicator.StopClient();
                 ServerIP.IsEnabled = true;
@@ -156,7 +161,27 @@ namespace GestureController
 
         private void ChooseFileForPlayer2(object sender, RoutedEventArgs e)
         {
+            // Create OpenFileDialog
+            OpenFileDialog dlg = new OpenFileDialog();
 
+            // Set filter for file extension and default file extension
+            dlg.DefaultExt = ".bin";
+            dlg.Filter = "Binary Documents (*.bin)|*.bin";
+            dlg.InitialDirectory = GestureSaveFileLocation;
+
+            // Display OpenFileDialog by calling ShowDialog method
+            // Get the selected file name and display in a TextBox
+            if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                // Open document
+                Stream file = File.OpenRead(dlg.FileName);
+                _player1file.Text = dlg.FileName;
+                _recognizer.RebuildGesturesFromBinary(file);
+                file.Close();
+                Logger.Debug(_recognizer.RetrieveText());
+                _Status.Text = "Gestures loaded!";
+                ConnectButton.IsEnabled = true;
+            }
         }
 
         private void GestureRecognized(GestureRecognizedEventArgs args)
@@ -186,7 +211,9 @@ namespace GestureController
                 communicator = new Communicator();
                 mapper = new GestureToActionMapper(communicator);
 
-                _recognizer = new GestureRecognizer(.9, 3);
+                _tracker = new SkeletonTracker();
+
+                _recognizer = new GestureRecognizer(.9, 3, _tracker);
                 _recognizer.GestureRecognized += mapper.GestureRecognized;
                 _recognizer.GestureRecognized += this.GestureRecognized;
 
@@ -223,6 +250,37 @@ namespace GestureController
             }
 
             Logger.Info("Finished loading window");
+        }
+
+        private void SkeletonTrackerUpdatedHandler(SkeletonTracker sender,
+            List<Dictionary<JointType, Point3D>> buffer, int id, Point3D absolutePosition)
+        {
+            if (absolutePosition.X > 0)
+            {
+                if (absolutePosition.X > .7)
+                {
+                    Logger.Debug("Player 1 moves left");
+                    mapper.SendAction("Move Left", 0);
+                }
+                else if (absolutePosition.X < .3)
+                {
+                    Logger.Debug("Player 1 moves right");
+                    mapper.SendAction("Move Right", 0);
+                }
+            }
+            else
+            {
+                if (absolutePosition.X > -.3)
+                {
+                    Logger.Debug("Player 2 moves left");
+                    mapper.SendAction("Move Left", 1);
+                }
+                else if (absolutePosition.X < -.7)
+                {
+                    Logger.Debug("Player 2 moves right");
+                    mapper.SendAction("Move Right", 1);
+                }
+            }
         }
 
         private void Window_Closed(object sender, EventArgs e)

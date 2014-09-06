@@ -31,13 +31,20 @@ namespace GestureController
         private ManualResetEvent sendDone = new ManualResetEvent(false);
         private ManualResetEvent receiveDone = new ManualResetEvent(false);
         private bool _connected;
-        private const int DefaultConnectTimeout = 5000;
+        private bool _connecting;
 
         public bool IsConnected
         {
             get
             {
                 return _connected;
+            }
+        }
+        public bool IsConnecting
+        {
+            get
+            {
+                return _connecting;
             }
         }
 
@@ -51,11 +58,11 @@ namespace GestureController
 
                 _client = new Socket(address.AddressFamily,
                     SocketType.Stream, ProtocolType.Tcp);
-
+                _connecting = true;
                 Logger.Debug("Beginning Async Kinect");
                 _client.BeginConnect(remoteEP,
                     new AsyncCallback(ConnectCallback), _client);
-                connectDone.WaitOne(DefaultConnectTimeout);
+                connectDone.WaitOne();
 
                 Receive();
             }
@@ -117,6 +124,7 @@ namespace GestureController
                 Logger.Debug("Connect completed");
                 connectDone.Set();
                 _connected = true;
+                _connecting = false;
             }
             catch (Exception e)
             {

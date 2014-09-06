@@ -29,7 +29,7 @@ namespace GestureRecognition
         private readonly double _globalThreshold;
         private int _minFrames;
 
-        private Dictionary<string, Gesture> _gestures;
+        private Dictionary<Guid, Gesture> _gestures;
 
         private bool _recognizing;
         private SkeletonTracker _tracker;
@@ -84,11 +84,12 @@ namespace GestureRecognition
         #region Constructors
 
         public GestureRecognizer(double globalThreshold, double cullingThreshold) : this(globalThreshold, cullingThreshold, DefaultMinimumFrames, new SkeletonTracker()) { }
+        public GestureRecognizer(double globalThreshold, double cullingThreshold, SkeletonTracker tracker) : this(globalThreshold, cullingThreshold, DefaultMinimumFrames, tracker) { }
         public GestureRecognizer(double globalThreshold, double cullingThreshold, int minFrames) : this(globalThreshold, cullingThreshold, minFrames, new SkeletonTracker()) { }
 
         public GestureRecognizer(double globalThreshold, double cullingThreshold, int minFrames, SkeletonTracker tracker)
         {
-            this._gestures = new Dictionary<string, Gesture>();
+            this._gestures = new Dictionary<Guid, Gesture>();
 
             _globalThreshold = globalThreshold;
             _cullingThreshold = cullingThreshold;
@@ -103,10 +104,6 @@ namespace GestureRecognition
         #endregion
 
         #region Public API
-        public Gesture getGesture(string label)
-        {
-            return _gestures[label];
-        }
 
         public void ClearAllGestures()
         {
@@ -128,7 +125,7 @@ namespace GestureRecognition
 
         public void AddOrUpdateGesture(Gesture gesture)
         {
-            _gestures[gesture.Label] = gesture;
+            _gestures[gesture.ID] = gesture;
             Logger.Info("Gesture successfully added to dictionary");
         }
 
@@ -170,7 +167,7 @@ namespace GestureRecognition
             BinaryFormatter serializer = new BinaryFormatter();
             try
             {
-                _gestures = (Dictionary<string, Gesture>)serializer.Deserialize(FileStream);
+                _gestures = (Dictionary<Guid, Gesture>)serializer.Deserialize(FileStream);
                 Logger.Info("Sucessfully rebuilt gesture library from FileStream");
                 return true;
             }
@@ -185,7 +182,7 @@ namespace GestureRecognition
 
         #region Private Helper Functions
         private void TrackerBufferUpdatedHandler(SkeletonTracker sender,
-            List<Dictionary<JointType, Point3D>> buffer, int id, SkeletonPoint absolutePosition)
+            List<Dictionary<JointType, Point3D>> buffer, int id, Point3D absolutePosition)
         {
             if (_recognizing && buffer.Count > _minFrames)
             {
@@ -196,7 +193,7 @@ namespace GestureRecognition
             }
         }
 
-        private bool Recognize(List<Dictionary<JointType, Point3D>> buffer, SkeletonPoint absolutePosition)
+        private bool Recognize(List<Dictionary<JointType, Point3D>> buffer, Point3D absolutePosition)
         {
             bool recognized = false;
 #if USE_PARALLEL_LOOP_FOR_GESTURES
@@ -230,12 +227,12 @@ namespace GestureRecognition
     public class GestureRecognizedEventArgs
     {
         public readonly Gesture Gesture;
-        public readonly SkeletonPoint SkeletonNumber;
+        public readonly Point3D AbsPosition;
 
-        public GestureRecognizedEventArgs(Gesture gesture, SkeletonPoint position)
+        public GestureRecognizedEventArgs(Gesture gesture, Point3D position)
         {
             this.Gesture = gesture;
-            this.SkeletonNumber = position;
+            this.AbsPosition = position;
         }
     }
 }

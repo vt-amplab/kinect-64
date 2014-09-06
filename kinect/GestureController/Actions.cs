@@ -26,8 +26,7 @@ namespace GestureController
             {"Smash Left", new AttackMessage(Attack.Special, Direction.MoveLeft)},
             {"Smash Up", new AttackMessage(Attack.Special, Direction.MoveUp)},
             {"Smash Down", new AttackMessage(Attack.Special, Direction.MoveDown)},
-            {"Punch Right", new AttackMessage(Attack.Punch, Direction.MoveRight)},
-            {"Punch Left", new AttackMessage(Attack.Punch, Direction.MoveLeft)},
+            {"Punch", new AttackMessage(Attack.Punch, Direction.NoMove)},
             {"Punch Up", new AttackMessage(Attack.Punch, Direction.MoveUp)},
             {"Punch Down", new AttackMessage(Attack.Punch, Direction.MoveDown)},
             {"Grab", new AttackMessage(Attack.Grab, Direction.NoMove)},
@@ -36,25 +35,31 @@ namespace GestureController
             {"Jump", new AttackMessage(Attack.NoAttack, Direction.MoveUp)},
             {"Crouch", new AttackMessage(Attack.NoAttack, Direction.MoveDown)},
             {"Move Left", new AttackMessage(Attack.NoAttack, Direction.MoveLeft)},
-            {"Move Right", new AttackMessage(Attack.NoAttack, Direction.MoveRight)}
+            {"Move Right", new AttackMessage(Attack.NoAttack, Direction.MoveRight)},
+            {"Special", new AttackMessage(Attack.Special, Direction.NoMove)}
         };
 
         public void GestureRecognized(GestureRecognizedEventArgs args)
         {
-            if (comm.IsConnected)
+            byte player = 0;
+            if (args.AbsPosition.X > 0)
             {
-                SendAction(args.Gesture.Label, 0);
+                player = 1;
             }
-            Logger.Info("Recognized Gesture " + args.Gesture.Label);
+            SendAction(args.Gesture.Label, player);
         }
 
         public void SendAction(string label, byte player)
         {
-            Console.WriteLine("Sending " + label);
-            AttackMessage mesg = Actions[label];
-            mesg.SetPlayer(player);
-            byte[] mesgBytes = mesg.GetMessageBytes();
-            comm.Send(mesgBytes);
+            Logger.Info("Recognized Gesture " + label + " by player " + (player + 1));
+            if (comm.IsConnected)
+            {
+                Console.WriteLine("Sending " + label);
+                AttackMessage mesg = Actions[label];
+                mesg.SetPlayer(player);
+                byte[] mesgBytes = mesg.GetMessageBytes();
+                comm.Send(mesgBytes);
+            }
         }
 
     }

@@ -85,7 +85,7 @@ namespace GestureRecognition
         public event BufferLimitReachedHandler BufferLimitReachedEvent;
 
         public delegate void BufferUpdatedEventHandler(SkeletonTracker sender,
-            List<Dictionary<JointType, Point3D>> buffer, int id, SkeletonPoint absolutePosition);
+            List<Dictionary<JointType, Point3D>> buffer, int id, Point3D absolutePosition);
         public event BufferUpdatedEventHandler BufferUpdatedEvent;
         #endregion
 
@@ -208,7 +208,7 @@ namespace GestureRecognition
 
             if (BufferUpdatedEvent != null)
             {
-                BufferUpdatedEvent(this, _buffer[id], id, data.Position);
+                BufferUpdatedEvent(this, _buffer[id], id, data.Joints[JointType.ShoulderCenter].Position);
             }
         }
         #endregion

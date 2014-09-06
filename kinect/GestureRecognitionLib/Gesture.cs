@@ -55,7 +55,7 @@ namespace GestureRecognition
 
         #endregion
 
-        #region constructors
+        #region Constructors
         
         public Gesture(List<Dictionary<JointType, Point3D>> sequence, string label) : this(sequence, DefMinLength, DefMaxSlope, Guid.NewGuid(), label) { }
 
