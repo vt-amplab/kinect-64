@@ -9,6 +9,9 @@ while not ret:
     print ret
     ret, img = cap.read()
 
+print cap.get(3)
+print cap.get(4)
+
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 cv2.imshow('gray', gray)
 
