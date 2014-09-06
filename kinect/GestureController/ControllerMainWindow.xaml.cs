@@ -1,55 +1,52 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Forms;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using System.IO;
+using System.Net;
+using System.Net.Sockets;
 
+using GestureRecognition;
 using Microsoft.Kinect;
 using log4net;
 using log4net.Config;
-using GestureRecognition;
-using GestureMapper;
 
-namespace GestureRecorder
+[assembly: log4net.Config.XmlConfigurator(Watch = true)]
+namespace GestureController
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class ControllerMainWindow : Window
     {
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(MainWindow));
-
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(ControllerMainWindow));
         private const string GestureSaveFileLocation = @".\";
 
-        static MainWindow()
+        static ControllerMainWindow()
         {
             XmlConfigurator.Configure();
         }
 
-        #region Private Member Variables
+        private Communicator communicator;
+        private GestureToActionMapper mapper;
+        private GestureRecognizer _recognizer;
         private KinectSensor _sensor;
         private byte[] _depthFrame32;
         private WriteableBitmap _colorBitmap;
         private WriteableBitmap _depthBitmap;
-        private GestureLearner _learner;
-        private GestureRecognizer _recognizer;
+        private int gesturesRecognized;
 
-        private Dictionary<string, Gesture> _gestures;
-
-        /// <summary>
-        /// Dictionary of all the joints Kinect SDK is capable of tracking. You might not want always to use them all but they are included here for thouroughness.
-        /// </summary>
         private readonly Dictionary<JointType, Brush> _jointColors = new Dictionary<JointType, Brush>
         { 
             {JointType.HipCenter, new SolidColorBrush(Color.FromRgb(169, 176, 155))},
@@ -74,28 +71,102 @@ namespace GestureRecorder
             {JointType.FootRight, new SolidColorBrush(Color.FromRgb(77, 109, 243))}
         };
 
-        private const int CaptureCountdownSeconds = 3;
-        private DateTime _captureCountdown = DateTime.Now;
-        private Timer _captureCountdownTimer;
-
-        #endregion
-
-        public MainWindow()
+        public ControllerMainWindow()
         {
             InitializeComponent();
 
-            _jointSelection.ItemsSource = Enum.GetValues(typeof(JointType)).Cast<JointType>().ToArray();
-            _jointSelection.SelectAll();
+            gesturesRecognized = 0;
+        }
 
-            _actionSelector.ItemsSource = GestureToActionMapper.Actions.Keys;
-            _actionSelector.SelectedIndex = 0;
+        private void ConnectToServer(object sender, RoutedEventArgs e)
+        {
+            if (!communicator.IsConnected)
+            {
+                Logger.Debug("Attempting to connect to server");
+                try
+                {
+                    IPAddress address;
+                    if (IPAddress.TryParse(ServerIP.Text, out address))
+                    {
+                        int port = int.Parse(ServerPort.Text);
+                        communicator.StartClient(address, port);
+                    }
+                    else
+                    {
+                        Logger.Warn("Error while parsing address: (" + ServerIP.Text + ")");
+                    }
+                }
+                catch (ArgumentNullException exception)
+                {
+                    Logger.Fatal("Null Exception while connecting to server", exception);
+                }
+                catch (FormatException exception)
+                {
+                    Logger.Fatal("Format Exception while connecting to server", exception);
+                }
+                catch (Exception exception)
+                {
+                    Logger.Fatal("Exception while connecting to server", exception);
+                }
 
-            _gestures = new Dictionary<string, Gesture>();
+                if (communicator.IsConnected)
+                {
+                    _Status.Text = "Connected to " + ServerIP.Text + ":" + ServerPort.Text;
+                    ServerIP.IsEnabled = false;
+                    ServerIP.IsEnabled = false;
+                    Logger.Info("Successfully connected to server");
+                }
+                else
+                {
+                    Logger.Info("Unsuccessful connection attempt");
+                }
+            }
+            else
+            {
+                communicator.StopClient();
+                ServerIP.IsEnabled = true;
+                ServerIP.IsEnabled = true;
+            }
+        }
+
+        private void ChooseFileForPlayer1(object sender, RoutedEventArgs e)
+        {
+            // Create OpenFileDialog
+            OpenFileDialog dlg = new OpenFileDialog();
+
+            // Set filter for file extension and default file extension
+            dlg.DefaultExt = ".bin";
+            dlg.Filter = "Binary Documents (*.bin)|*.bin";
+            dlg.InitialDirectory = GestureSaveFileLocation;
+
+            // Display OpenFileDialog by calling ShowDialog method
+            // Get the selected file name and display in a TextBox
+            if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                // Open document
+                Stream file = File.OpenRead(dlg.FileName);
+                _player1file.Text = dlg.FileName;
+                _recognizer.RebuildGesturesFromBinary(file);
+                file.Close();
+                Logger.Debug(_recognizer.RetrieveText());
+                _Status.Text = "Gestures loaded!";
+                ConnectButton.IsEnabled = true;
+            }
+        }
+
+        private void ChooseFileForPlayer2(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void GestureRecognized(GestureRecognizedEventArgs args)
+        {
+            gesturesRecognized++;
+            _Status.Text = args.Gesture.Label + " recognized (" + gesturesRecognized + ")";
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-
             this._sensor = null;
             // Loop through potential kinects and choose one
             foreach (var potential in KinectSensor.KinectSensors)
@@ -109,20 +180,18 @@ namespace GestureRecorder
             if (this._sensor == null)
             {
                 Logger.Warn("No kinect sensors attached");
-                this._statusText.Text += "No Kinect sensor found -- Please connect a sensor and restart the application";
             }
             else
             {
-
-                _learner = new GestureLearner();
-                _learner.GestureCaptured += this.GestureCaptureFinishedHandler;
+                communicator = new Communicator();
+                mapper = new GestureToActionMapper(communicator);
 
                 _recognizer = new GestureRecognizer(.9, 3);
-                _recognizer.GestureRecognized += this.GestureRecognizedHandler;
+                _recognizer.GestureRecognized += mapper.GestureRecognized;
+                _recognizer.GestureRecognized += this.GestureRecognized;
 
                 this._sensor.SkeletonStream.Enable();
                 this._sensor.SkeletonFrameReady += this.SkeletonFrameReadyHandler;
-                this._sensor.SkeletonFrameReady += _learner.FrameReadyHandler;
                 this._sensor.SkeletonFrameReady += _recognizer.FrameReadyHandler;
 
                 this._sensor.ColorStream.Enable(ColorImageFormat.RgbResolution640x480Fps30);
@@ -139,6 +208,8 @@ namespace GestureRecorder
                 _depthBitmap = new WriteableBitmap(this._sensor.DepthStream.FrameWidth, this._sensor.DepthStream.FrameHeight,
                     96.0, 96.0, PixelFormats.Bgr32, null);
                 depthImage.Source = _depthBitmap;
+
+                _recognizer.StartRecognizing();
 
                 try
                 {
@@ -161,11 +232,9 @@ namespace GestureRecorder
             Logger.Debug("Kinect sensor stopped");
             Environment.Exit(0);
         }
-
         private void SkeletonFrameReadyHandler(object sender, SkeletonFrameReadyEventArgs args)
         {
             _fpsDisplay.Text = _recognizer.AverageFPS.ToString("N2");
-            _learnerBufferCount.Text = _learner.CurrentBufferSize + " frames";
             _recognizerBufferCount.Text = _recognizer.CurrentBufferSize + " frames";
             using (SkeletonFrame frame = args.OpenSkeletonFrame())
             {
@@ -219,7 +288,7 @@ namespace GestureRecorder
                 }
                 else
                 {
-                    this._statusText.Text += "Frame is null";
+                    Logger.Info("Frame is null");
                 }
             }
         }
@@ -255,7 +324,7 @@ namespace GestureRecorder
             int RedIdx = 2;
             int BlueIdx = 0;
             int GreenIdx = 1;
-            
+
             for (int i16 = 0, i32 = 0; i16 < depthFrame16.Length && i32 < _depthFrame32.Length; i16 += 2, i32 += 4)
             {
                 int player = depthFrame16[i16].PlayerIndex;
@@ -347,7 +416,7 @@ namespace GestureRecorder
 
             depthX = Math.Max(0, Math.Min(depthX * _sensor.DepthStream.FrameWidth,
                 _sensor.DepthStream.FrameWidth));
-            depthY = Math.Max(0, Math.Min(depthY * _sensor.DepthStream.FrameHeight, 
+            depthY = Math.Max(0, Math.Min(depthY * _sensor.DepthStream.FrameHeight,
                 _sensor.DepthStream.FrameHeight));
 
             int colorX, colorY;
@@ -378,147 +447,6 @@ namespace GestureRecorder
             polyline.Stroke = brush;
             polyline.StrokeThickness = 5;
             return polyline;
-        }
-
-        private void CaptureGesture_Click(object sender, RoutedEventArgs e)
-        {
-            _captureCountdown = DateTime.Now.AddSeconds(CaptureCountdownSeconds);
-
-            _captureCountdownTimer = new Timer();
-            _captureCountdownTimer.Interval = 50;
-            _captureCountdownTimer.Start();
-            _captureCountdownTimer.Tick += CaptureCountdown;
-        }
-
-        /// <summary>
-        /// The method fired by the countdown timer. Either updates the countdown or fires the StartCapture method if the timer expires
-        /// </summary>
-        /// <param name="sender">The sender object</param>
-        /// <param name="e">Event Args</param>
-        private void CaptureCountdown(object sender, EventArgs e)
-        {
-            if (sender == _captureCountdownTimer)
-            {
-                if (DateTime.Now < _captureCountdown)
-                {
-                    _statusText.Text = "Wait " + ((_captureCountdown - DateTime.Now).Seconds + 1) + " seconds";
-                }
-                else
-                {
-                    _captureCountdownTimer.Stop();
-                    _statusText.Text = "Recording gesture";
-                    StartCapture();
-                }
-            }
-        }
-
-        private void DisableButtons()
-        {
-            _actionSelector.IsEnabled = false;
-            _lengthSlider.IsEnabled = false;
-            _jointSelection.IsEnabled = false;
-            _testAllGestures.IsEnabled = false;
-            _testGesture.IsEnabled = false;
-            _recordGesture.IsEnabled = false;
-            _stop.IsEnabled = true;
-        }
-
-        private void EnableButtons()
-        {
-            _actionSelector.IsEnabled = true;
-            _lengthSlider.IsEnabled = true;
-            _jointSelection.IsEnabled = true;
-            _testAllGestures.IsEnabled = true;
-            _testGesture.IsEnabled = true;
-            _recordGesture.IsEnabled = true;
-            _stop.IsEnabled = false;
-        }
-
-        private void StartCapture()
-        {
-            DisableButtons();
-            _statusText.Text = "Recording gesture for " + _actionSelector.Text;
-            _recognizer.StopRecognizing();
-            _learner.StartCapture();
-        }
-
-        private void GestureCaptureFinishedHandler(GestureCapturedEventArgs args)
-        {
-            _statusText.Text = "Gesture capture finished";
-
-            foreach (Dictionary<JointType, Point3D> observation in args.Buffer)
-            {
-                var keysToRemove = observation.Where(kvp => Array.IndexOf(SkeletonNormalizer.Forearms, kvp.Key) < 0)
-                    .Select(kvp => kvp.Key).ToArray();
-                Logger.Debug("Number of keysToRemove: " + keysToRemove.Length);
-                foreach (JointType type in keysToRemove)
-                {
-                    observation.Remove(type);
-                }
-            }
-
-            Gesture gesture = new Gesture(args.Buffer, _actionSelector.Text);
-
-            _gestures[gesture.Label] = gesture;
-
-            EnableButtons();
-        }
-
-        private void GestureRecognizedHandler(GestureRecognizedEventArgs args)
-        {
-            _statusText.Text = "Recognized " + args.Gesture.Label;
-        }
-
-        private void _testGesture_Click(object sender, RoutedEventArgs e)
-        {
-            _recognizer.ClearAllGestures();
-            Gesture gesture;
-            if (_gestures.TryGetValue(_actionSelector.Text, out gesture))
-            {
-                DisableButtons();
-                _recognizer.AddOrUpdateGesture(gesture);
-                _statusText.Text = _recognizer.RetrieveText();
-
-                _recognizer.StartRecognizing();
-            }
-        }
-
-        private void _testAllGestures_Click(object sender, RoutedEventArgs e)
-        {
-            DisableButtons();
-
-            _recognizer.ClearAllGestures();
-            foreach (Gesture gesture in _gestures.Values)
-            {
-                _recognizer.AddOrUpdateGesture(gesture);
-            }
-
-            _statusText.Text += _recognizer.RetrieveText();
-
-            _recognizer.StartRecognizing();
-        }
-
-        private void _stop_Click(object sender, RoutedEventArgs e)
-        {
-            _recognizer.StopRecognizing();
-            _learner.CancelCapture();
-            EnableButtons();
-        }
-
-        private void _saveFileButton_Click(object sender, RoutedEventArgs e)
-        {
-            string fileName = _saveFileName.Text + ".bin";
-            Stream file = File.OpenWrite(fileName);
-
-            foreach (Gesture gesture in _gestures.Values)
-            {
-                _recognizer.AddOrUpdateGesture(gesture);
-            }
-
-            _recognizer.PersistGesturesInBinary(file);
-            file.Flush();
-            file.Close();
-            _statusText.Text += "Saved to " + fileName;
         }
     }
 }

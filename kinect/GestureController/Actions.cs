@@ -7,13 +7,14 @@ using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 
 using GestureRecognition;
-using System.Net;
-using System.Net.Sockets;
+
+using log4net;
 
 namespace GestureController
 {
     public class GestureToActionMapper
     {
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(GestureToActionMapper));
         private Communicator comm;
         public GestureToActionMapper(Communicator comm)
         {
@@ -40,7 +41,11 @@ namespace GestureController
 
         public void GestureRecognized(GestureRecognizedEventArgs args)
         {
-            SendAction(args.Gesture.Label, 0);
+            if (comm.IsConnected)
+            {
+                SendAction(args.Gesture.Label, 0);
+            }
+            Logger.Info("Recognized Gesture " + args.Gesture.Label);
         }
 
         public void SendAction(string label, byte player)
@@ -52,156 +57,6 @@ namespace GestureController
             comm.Send(mesgBytes);
         }
 
-    }
-
-    public class CommunicatorStateObject
-    {
-        public Socket workSocket = null;
-        public const int MaxBufferSize = 256;
-        public byte[] buffer = new byte[MaxBufferSize];
-        public int BufferSize = 0;
-    }
-
-    public class Communicator
-    {
-        public delegate void DataReceived(byte[] buffer, int bufferLength);
-        public event DataReceived DataReceivedEvent;
-
-        private ManualResetEvent connectDone = new ManualResetEvent(false);
-        private ManualResetEvent sendDone = new ManualResetEvent(false);
-        private ManualResetEvent receiveDone = new ManualResetEvent(false);
-
-        private Socket _client;
-
-        public void StartClient(byte[] address, int port)
-        {
-            try
-            {
-
-                IPAddress ipAddress = new IPAddress(address);
-                IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
-
-                _client = new Socket(ipAddress.AddressFamily,
-                    SocketType.Stream, ProtocolType.Tcp);
-
-                _client.BeginConnect(remoteEP,
-                    new AsyncCallback(ConnectCallback), _client);
-                connectDone.WaitOne();
-
-                Receive();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
-            }
-        }
-
-        public void StopClient()
-        {
-            try
-            {
-                _client.Disconnect(true);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
-            }
-        }
-
-        public void Send(byte[] data)
-        {
-            sendDone.Reset();
-            _client.BeginSend(data, 0, data.Length, 0,
-                new AsyncCallback(SendCallback), _client);
-        }
-
-        public void Receive()
-        {
-            try
-            {
-                CommunicatorStateObject state = new CommunicatorStateObject();
-                state.workSocket = _client;
-
-                _client.BeginReceive(state.buffer, 0,
-                    CommunicatorStateObject.MaxBufferSize, 0,
-                    new AsyncCallback(ReceiveCallback), state);
-                receiveDone.Reset();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
-            }
-        }
-
-        public void WaitForReceive()
-        {
-            receiveDone.WaitOne();
-        }
-
-        private void ConnectCallback(IAsyncResult ar)
-        {
-            try
-            {
-                Socket client = (Socket)ar.AsyncState;
-                client.EndConnect(ar);
-                Console.WriteLine("Socket connected to {0}", client.RemoteEndPoint.ToString());
-                connectDone.Set();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
-            }
-        }
-
-        private void ReceiveCallback(IAsyncResult ar)
-        {
-            try
-            {
-                CommunicatorStateObject state = (CommunicatorStateObject)ar.AsyncState;
-                Socket client = state.workSocket;
-
-                int bytesRead = client.EndReceive(ar);
-
-                if (bytesRead > 0)
-                {
-                    Console.WriteLine("Received {0} bytes in response", bytesRead);
-                    state.BufferSize += bytesRead;
-                    client.BeginReceive(state.buffer, state.BufferSize,
-                        CommunicatorStateObject.MaxBufferSize - state.BufferSize,
-                        0, new AsyncCallback(ReceiveCallback), state);
-                }
-                else
-                {
-                    if (state.BufferSize > 1 && DataReceivedEvent != null)
-                    {
-                        DataReceivedEvent(state.buffer, state.BufferSize);
-                    }
-                    receiveDone.Set();
-                    Receive();
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
-            }
-        }
-
-        private void SendCallback(IAsyncResult ar)
-        {
-            try
-            {
-                Socket client = (Socket)ar.AsyncState;
-
-                int bytesSent = client.EndSend(ar);
-                Console.WriteLine("Sent {0} bytes to server", bytesSent);
-
-                sendDone.Set();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
-            }
-        }
     }
 
     public struct PackedMessage
