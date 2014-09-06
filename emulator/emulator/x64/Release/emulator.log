@@ -1,0 +1,21 @@
+﻿Build started 9/6/2014 9:54:00 AM.
+     1>Project "C:\Users\Conor\documents\visual studio 2012\Projects\emulator\emulator\emulator.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\x86_amd64\CL.exe /c /AI"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.1\\" /AI"C:\Program Files (x86)\Windows Kits\8.0\References\CommonConfiguration\Neutral" /AI"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.1\Facades\\" /Zi /clr /nologo /W3 /WX- /O2 /D WIN32 /D NDEBUG /D _UNICODE /D UNICODE /EHa /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"x64\Release\emulator.pch" /Fo"x64\Release\\" /Fd"x64\Release\vc110.pdb" /TP /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.1\mscorlib.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.1\System.Data.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.1\System.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.1\System.Xml.dll" /errorReport:prompt emulator.cpp
+         emulator.cpp
+     1>emulator.cpp(11): warning C4947: 'System::Net::Dns::Resolve' : marked as obsolete
+                 Message: 'Resolve is obsoleted for this type, please use GetHostEntry instead. http://go.microsoft.com/fwlink/?linkid=14202'
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Conor\documents\visual studio 2012\Projects\emulator\x64\Release\emulator.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:"C:\Users\Conor\documents\visual studio 2012\Projects\emulator\thirdparty\opencv\staticlib" user32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Conor\documents\visual studio 2012\Projects\emulator\x64\Release\emulator.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /FIXED:NO /NXCOMPAT /MACHINE:X64 x64\Release\app.res
+         x64\Release\AssemblyInfo.obj
+         x64\Release\emulator.obj
+         x64\Release\Keyboard.obj
+         x64\Release\player.obj
+         x64\Release\stdafx.obj
+         "x64\Release\.NETFramework,Version=v4.5.1.AssemblyAttributes.obj"
+         emulator.vcxproj -> C:\Users\Conor\documents\visual studio 2012\Projects\emulator\x64\Release\emulator.exe
+     1>Done Building Project "C:\Users\Conor\documents\visual studio 2012\Projects\emulator\emulator\emulator.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.56

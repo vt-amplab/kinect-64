@@ -1,0 +1,5 @@
+c:\users\conor\documents\visual studio 2012\Projects\emulator\keyboard\bin\Release\keyboard.exe.config
+c:\users\conor\documents\visual studio 2012\Projects\emulator\keyboard\bin\Release\keyboard.exe
+c:\users\conor\documents\visual studio 2012\Projects\emulator\keyboard\bin\Release\keyboard.pdb
+c:\users\conor\documents\visual studio 2012\Projects\emulator\keyboard\obj\Release\keyboard.exe
+c:\users\conor\documents\visual studio 2012\Projects\emulator\keyboard\obj\Release\keyboard.pdb
