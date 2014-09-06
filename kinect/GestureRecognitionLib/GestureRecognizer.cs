@@ -1,4 +1,4 @@
-﻿#define USE_PARALLEL_LOOP_FOR_GESTURES
+﻿//#define USE_PARALLEL_LOOP_FOR_GESTURES
 
 using log4net;
 using Microsoft.Kinect;

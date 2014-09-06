@@ -62,7 +62,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="MainWindow.xaml">
+    <Page Include="RecorderMainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -70,8 +70,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
+    <Compile Include="RecorderMainWindow.xaml.cs">
+      <DependentUpon>RecorderMainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Resources.xaml">
@@ -114,9 +114,9 @@
     <Resource Include="Images\kinect_joint.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GestureMapper\GestureMapper.csproj">
-      <Project>{76ec781d-a246-43bb-81fe-c711de6756f1}</Project>
-      <Name>GestureMapper</Name>
+    <ProjectReference Include="..\GestureController\GestureController.csproj">
+      <Project>{5ab3bb65-f2c3-49e6-a272-b421b3889700}</Project>
+      <Name>GestureController</Name>
     </ProjectReference>
     <ProjectReference Include="..\GestureRecognitionLib\GestureRecognition.csproj">
       <Project>{673aeeec-2185-4109-8e31-7fec2b8db6a1}</Project>
