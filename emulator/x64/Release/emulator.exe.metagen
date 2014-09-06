@@ -9,3 +9,16 @@ Assembly System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e0
 	hash=None, flags=None
 Assembly System.Xml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
 	hash=None, flags=None
+Class Server: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(SmashBros.Game*): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Fields:
+    System.Net.Sockets.TcpListener tcpListener : Public
+    System.Threading.Thread listenThread : Public
+    System.Threading.ParameterizedThreadStart handler : Public
+    SmashBros.Game* m_context : Public
+    System.Net.Sockets.TcpClient playerBox : Public
+    System.Net.Sockets.TcpClient kinectBox : Public
+  Methods:
+    ListenForClients(): PrivateScope, Public, HideBySig
+    HandleClient(Object): PrivateScope, Public, HideBySig

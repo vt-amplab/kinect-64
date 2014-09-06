@@ -38,6 +38,7 @@ void Player::select(int delay){
 void Player::back(int delay){
 	tapKey(m_B,delay);
 }
+
 void Player::start(){
 	tapKey(VK_RETURN);
 }
@@ -45,6 +46,7 @@ void Player::reset(){
 	start();
 	char buf[5] = {m_A,m_B,m_Z,m_R,0};
 	tapKey(buf);
+	Sleep(1000);
 }
 
 void Player::enterVersus(){
@@ -130,7 +132,7 @@ void Player::pickCharacter(SmashBros::Character c){
 	back();
 	Sleep(400);
 	center();
-	down(125);
+	down(110);
 	right(50);
 	int charBlock = 120;
 	int hfactor = ((int) c);
@@ -139,6 +141,7 @@ void Player::pickCharacter(SmashBros::Character c){
 	right(charBlock * ((hfactor % 6) ));
 	down(charBlock * vfactor);
 	select();
+	m_picked = true;
 
 }
 
@@ -150,6 +153,7 @@ void Player::pickMap(SmashBros::Map m){
 		down();
 		Sleep(200);
 	}
+
 	for (int i=0; i<num; i++){
 		right(60);
 		Sleep(200);

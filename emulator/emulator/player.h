@@ -1,4 +1,4 @@
-
+#pragma once
 #include "Keyboard.h"
 #include "windows.h"
 
@@ -32,8 +32,6 @@ typedef enum{
 	MCharacter=0,
 	MAttack,
 	MMap, 
-	Grab,
-	Block
 } Mode;
 
 typedef enum{
@@ -56,6 +54,8 @@ typedef enum{
 	SaffronCity,
 	Random
 } Map;
+
+
 
 class Player : public Keyboard{
 public:
@@ -83,15 +83,20 @@ public:
 
 	virtual void center();
 
+	inline bool hasPicked();
+
+	inline void resetPick();
+
 private:
 
 	char m_upKey, m_leftKey, m_rightKey, m_downKey;
 
 	char m_A, m_B, m_L, m_R, m_Z, m_S;
 
-
+	bool m_picked;
 
 	
 };
-
+bool Player::hasPicked(){return m_picked;}
+void Player::resetPick(){m_picked = false;}
 }
