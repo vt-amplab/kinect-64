@@ -19,6 +19,7 @@ using Microsoft.Kinect;
 using log4net;
 using log4net.Config;
 using GestureRecognition;
+using GestureMapper;
 
 namespace GestureRecorder
 {
@@ -29,10 +30,13 @@ namespace GestureRecorder
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(MainWindow));
 
+        private const string GestureSaveFileLocation = @".\";
+
         static MainWindow()
         {
             XmlConfigurator.Configure();
         }
+
         #region Private Member Variables
         private KinectSensor _sensor;
         private byte[] _depthFrame32;
@@ -82,6 +86,9 @@ namespace GestureRecorder
 
             _jointSelection.ItemsSource = Enum.GetValues(typeof(JointType)).Cast<JointType>().ToArray();
             _jointSelection.SelectAll();
+
+            _actionSelector.ItemsSource = GestureToActionMapper.Actions.Keys;
+            _actionSelector.SelectedIndex = 0;
 
             _gestures = new Dictionary<string, Gesture>();
         }
@@ -479,12 +486,14 @@ namespace GestureRecorder
         private void _testAllGestures_Click(object sender, RoutedEventArgs e)
         {
             DisableButtons();
+
+            _recognizer.ClearAllGestures();
             foreach (Gesture gesture in _gestures.Values)
             {
                 _recognizer.AddOrUpdateGesture(gesture);
             }
 
-            _statusText.Text = _recognizer.RetrieveText();
+            _statusText.Text += _recognizer.RetrieveText();
 
             _recognizer.StartRecognizing();
         }
@@ -494,6 +503,22 @@ namespace GestureRecorder
             _recognizer.StopRecognizing();
             _learner.CancelCapture();
             EnableButtons();
+        }
+
+        private void _saveFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            string fileName = _saveFileName.Text + ".bin";
+            Stream file = File.OpenWrite(fileName);
+
+            foreach (Gesture gesture in _gestures.Values)
+            {
+                _recognizer.AddOrUpdateGesture(gesture);
+            }
+
+            _recognizer.PersistGesturesInBinary(file);
+            file.Flush();
+            file.Close();
+            _statusText.Text += "Saved to " + fileName;
         }
     }
 }

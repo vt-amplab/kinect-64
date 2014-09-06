@@ -114,6 +114,10 @@
     <Resource Include="Images\kinect_joint.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GestureMapper\GestureMapper.csproj">
+      <Project>{76ec781d-a246-43bb-81fe-c711de6756f1}</Project>
+      <Name>GestureMapper</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GestureRecognitionLib\GestureRecognition.csproj">
       <Project>{673aeeec-2185-4109-8e31-7fec2b8db6a1}</Project>
       <Name>GestureRecognition</Name>

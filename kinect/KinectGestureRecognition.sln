@@ -56,6 +56,7 @@ Global
 		{76EC781D-A246-43BB-81FE-C711DE6756F1}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
 		{76EC781D-A246-43BB-81FE-C711DE6756F1}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
 		{76EC781D-A246-43BB-81FE-C711DE6756F1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{76EC781D-A246-43BB-81FE-C711DE6756F1}.Debug|x86.Build.0 = Debug|Any CPU
 		{76EC781D-A246-43BB-81FE-C711DE6756F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{76EC781D-A246-43BB-81FE-C711DE6756F1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{76EC781D-A246-43BB-81FE-C711DE6756F1}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
