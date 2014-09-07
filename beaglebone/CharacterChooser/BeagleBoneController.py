@@ -11,6 +11,7 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 while True:
     while True:
         try:
+            time.sleep(5)
             s.connect((IP, PORT))
             break
         except Exception as e:
