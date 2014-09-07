@@ -35,10 +35,10 @@ for cnt in contours1:
         elif (len(approx) >= 10) and (len(approx) <= 14) and (area > 4500) and (area < 4900):
             print "Yoshi"
             cv2.drawContours(img, [cnt], 0, (0, 0, 255), -1)
-        elif (len(approx) >= 14) and (len(approx) <= 18) and (area > 3400) and (area < 3800):
+        elif (len(approx) >= 14) and (len(approx) <= 18) and (area > 3200) and (area < 3600):
             print "Falcon"
             cv2.drawContours(img, [cnt], 0, (0, 100, 255), -1)
-        # elif (len(approx) >= 11) and (len(approx) <= 12) and (area > 2200) and (area < 2500):
+        # elif (len(approx) >= 11) and (len(approx) <= 12) and (area2>22200) and (area < 2500):
         #     print "Pika"
         #     cv2.drawContours(img, [cnt], 0, (100, 100, 255), -1)
         # elif (len(approx) >= 6) and (len(approx) <= 8) and (area > 900) and (area < 1150):
