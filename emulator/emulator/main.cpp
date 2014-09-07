@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Game.h"
 #include "windows.h"
+#include "Tracker.h"
 
 using namespace System;
 using namespace System::Net::Sockets;
@@ -11,23 +12,30 @@ using namespace SmashBros;
 
 
 int main(){
+	// cv::Mat a;
+	Tracker a;
 	Sleep(2000);
 	SmashBros::Game Game(Fighting);
 
-	Sleep(2000 * 60);
+	// Game.test();
 	
-#if 0
-	static int pp = 0;
-	while(1)
-		for(int i = 0; i<SmashBros::Block+1; i++){
-			for(int j = 0; j<MoveRight+1; j++){
-				// Sleep(1200);
-				// Console::WriteLine("Attack: "+i+", "+j);
-				Game.attack((Attack)i, (Direction)j, pp++ % 2);
-			}  
+	while(1){
+		int win = a.checkGameOver();
+		switch(win){
+		case 0: 
+			Console::WriteLine("P1 wins!");
+			Game.win(win);
+		break;
+		case 1:
+			Console::WriteLine("P2 wins!");
+			Game.win(win);
+		break;
 		}
-#endif
+		Sleep(500);
+	}
+	
 
-		return 0;
+
+	return 0;
 
 }

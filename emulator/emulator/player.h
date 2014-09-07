@@ -31,7 +31,8 @@ typedef enum{
 typedef enum{
 	MCharacter=0,
 	MAttack,
-	MMap, 
+	MMap,
+	MHeartBeat
 } Mode;
 
 typedef enum{

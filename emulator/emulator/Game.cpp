@@ -8,7 +8,7 @@ using namespace System::Net::Sockets;
 using namespace System::Text;
 using namespace System::Threading;
 using namespace System::Net;
-
+using namespace System;
 
 
 Game::Game(SmashBros::State m):
@@ -39,8 +39,9 @@ int Game::pickCharacter(SmashBros::Character m, int p)
 	if (m_p2.hasPicked() && m_p1.hasPicked()){
 		m_p1.resetPick();
 		m_p2.resetPick();
-		m_state = PickMap;
+		//m_state = PickMap;
 		m_p1.start();
+		pickMap(SmashBros::PeachCastle, 0);	 // hack
 	}
 
 	return 0;
@@ -62,4 +63,31 @@ int Game::pickMap(SmashBros::Map m, int p)
 	m_state = Fighting;
 
 	return 0;
+}
+void Game::win(int p)
+{
+
+	if (!p){
+		setState(GameOverP1);
+	}
+	else{
+		setState(GameOverP2);
+	}
+	begin();
+}
+
+void Game::test()
+{
+	System::Random^ rnd = gcnew System::Random();
+	while(1)
+		for (int i=0; i<Block+1; i++){
+	
+			for(int j=0; j < MoveRight+1; j++){
+				m_p1.attack((Attack)( rnd->Next(1,500)%(Block+1) ),  (Direction)( rnd->Next(1,500)%(MoveRight+1)) );
+				m_p2.attack((Attack)( rnd->Next(1,500)%(Block+1) ), (Direction)( rnd->Next(1,500)%(MoveRight+1)) );
+				Console::WriteLine("A: "+i+" D: "+j);
+				Sleep(800);
+			}
+
+		}
 }

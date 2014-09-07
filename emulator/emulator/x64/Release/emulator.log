@@ -1,11 +1,10 @@
-﻿Build started 9/6/2014 1:41:25 PM.
+﻿Build started 9/6/2014 9:37:45 PM.
      1>Project "C:\Users\Conor\Documents\Visual Studio 2012\Projects\kinect-64\emulator\emulator\emulator.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\x86_amd64\CL.exe /c /AI"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.1\\" /AI"C:\Program Files (x86)\Windows Kits\8.0\References\CommonConfiguration\Neutral" /AI"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.1\Facades\\" /Zi /clr /nologo /W3 /WX- /O2 /D WIN32 /D NDEBUG /D _UNICODE /D UNICODE /EHa /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"x64\Release\emulator.pch" /Fo"x64\Release\\" /Fd"x64\Release\vc110.pdb" /TP /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.1\mscorlib.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.1\System.Data.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.1\System.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.1\System.Xml.dll" /errorReport:prompt TcpSocket.cpp
-         TcpSocket.cpp
-     1>TcpSocket.cpp(45): warning C4800: 'const char *' : forcing value to bool 'true' or 'false' (performance warning)
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\x86_amd64\CL.exe /c /I"C:\Users\Conor\Documents\Visual Studio 2012\Projects\kinect-64\emulator\thirdparty\opencv\include" /AI"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.1\\" /AI"C:\Program Files (x86)\Windows Kits\8.0\References\CommonConfiguration\Neutral" /AI"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.1\Facades\\" /Zi /clr /nologo /W3 /WX- /O2 /D WIN32 /D NDEBUG /D _UNICODE /D UNICODE /EHa /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"x64\Release\emulator.pch" /Fo"x64\Release\\" /Fd"x64\Release\vc110.pdb" /TP /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.1\mscorlib.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.1\System.Data.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.1\System.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.1\System.Xml.dll" /errorReport:prompt main.cpp
+         main.cpp
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Conor\Documents\Visual Studio 2012\Projects\kinect-64\emulator\x64\Release\emulator.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:"C:\Users\Conor\Documents\Visual Studio 2012\Projects\kinect-64\emulator\thirdparty\opencv\staticlib" user32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Conor\Documents\Visual Studio 2012\Projects\kinect-64\emulator\x64\Release\emulator.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /FIXED:NO /NXCOMPAT /MACHINE:X64 x64\Release\app.res
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Conor\Documents\Visual Studio 2012\Projects\kinect-64\emulator\x64\Release\emulator.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:"C:\Users\Conor\Documents\Visual Studio 2012\Projects\kinect-64\emulator\x64\Release" /LIBPATH:"C:\Users\Conor\Documents\Visual Studio 2012\Projects\kinect-64\emulator\thirdparty\opencv\x64\vc11\lib" opencv_core249.lib user32.lib opencv_imgproc249.lib opencv_highgui249.lib Gdi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Conor\Documents\Visual Studio 2012\Projects\kinect-64\emulator\x64\Release\emulator.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /FIXED:NO /NXCOMPAT /MACHINE:X64 x64\Release\app.res
          x64\Release\AssemblyInfo.obj
          x64\Release\Game.obj
          x64\Release\main.obj
@@ -13,10 +12,11 @@
          x64\Release\player.obj
          x64\Release\stdafx.obj
          x64\Release\TcpSocket.obj
+         x64\Release\Tracker.obj
          "x64\Release\.NETFramework,Version=v4.5.1.AssemblyAttributes.obj"
          emulator.vcxproj -> C:\Users\Conor\Documents\Visual Studio 2012\Projects\kinect-64\emulator\x64\Release\emulator.exe
      1>Done Building Project "C:\Users\Conor\Documents\Visual Studio 2012\Projects\kinect-64\emulator\emulator\emulator.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:00.61
+Time Elapsed 00:00:02.34
