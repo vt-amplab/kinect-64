@@ -18,7 +18,6 @@
         <Canvas Grid.Row="0" Grid.Column="1" Width="400" Height="300" Name="skeletonCanvas" Background="Black" ClipToBounds="True" Margin="5,5,5,5" />
         <Label Content="FPS:" HorizontalAlignment="Left" Margin="10,0,0,36" Height="26" VerticalAlignment="Bottom"/>
         <TextBlock Text="FPS" Name="_fpsDisplay" Width="Auto" HorizontalAlignment="Right" Margin="0,0,490,36" TextWrapping="Wrap" VerticalAlignment="Bottom" Height="26"/>
-        <Button IsEnabled="False" Content="Connect to Game Server" Name="ConnectButton" Click="ConnectToServer" Margin="10,210,10,0" Height="20" VerticalAlignment="Top"/>
         <Label Content="Player 1 Gestures:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
         <Label Content="Player 2 Gestures:" HorizontalAlignment="Left" Margin="10,66,0,0" VerticalAlignment="Top"/>
         <TextBlock Name="_player1file" Margin="119,15,10,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="None"/>
@@ -32,7 +31,8 @@
         <Label Content="Buffer Count:" HorizontalAlignment="Left" Margin="10,0,0,10" VerticalAlignment="Bottom"/>
         <TextBlock HorizontalAlignment="Right" Name="_recognizerBufferCount" Margin="0,0,490,15" TextWrapping="Wrap" Text="Buf" VerticalAlignment="Bottom"/>
         <TextBlock Name="_Status" HorizontalAlignment="Left" Margin="10,122,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Width="616"/>
-        <TextBlock Name="_gameStateDisplay" Margin="86,240,10,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top"/>
-        <Label Content="Game State:" HorizontalAlignment="Left" Margin="10,235,0,0" VerticalAlignment="Top"/>
+        <TextBlock Name="_gameStateDisplay" Margin="89,214,452,0" TextWrapping="Wrap" Text="Unknown" VerticalAlignment="Top"/>
+        <Label Content="Game State:" HorizontalAlignment="Left" Margin="10,209,0,0" VerticalAlignment="Top"/>
+        <TextBlock Name="ServerStatus" Margin="397,214,10,0" TextWrapping="Wrap" Text="Not connected" VerticalAlignment="Top"/>
     </Grid>
 </Window>

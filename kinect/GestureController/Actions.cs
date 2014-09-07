@@ -156,7 +156,8 @@ namespace GestureController
 
     public enum GameState
     {
-        SettingUp = 1,
+        Unknown = 0,
+        SettingUp,
         PickCharacter,
         PickMap,
         Fighting,

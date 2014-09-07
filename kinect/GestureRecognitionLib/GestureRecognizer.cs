@@ -112,15 +112,21 @@ namespace GestureRecognition
 
         public void StartRecognizing()
         {
-            _tracker.ClearAllBuffers();
-            Logger.Info("Beginning to recognize gestures");
-            _recognizing = true;
+            if (!_recognizing)
+            {
+                _tracker.ClearAllBuffers();
+                Logger.Info("Beginning to recognize gestures");
+                _recognizing = true;
+            }
         }
 
         public void StopRecognizing()
         {
-            Logger.Info("Ending gesture recognition");
-            _recognizing = false;
+            if (_recognizing)
+            {
+                Logger.Info("Ending gesture recognition");
+                _recognizing = false;
+            }
         }
 
         public void AddOrUpdateGesture(Gesture gesture)
@@ -169,6 +175,25 @@ namespace GestureRecognition
             {
                 _gestures = (Dictionary<Guid, Gesture>)serializer.Deserialize(FileStream);
                 Logger.Info("Sucessfully rebuilt gesture library from FileStream");
+                return true;
+            }
+            catch (SerializationException exception)
+            {
+                Logger.Warn("Exception while deserializing FileStream", exception);
+            }
+            return false;
+        }
+
+        public bool AddGesturesFromFile(Stream FileStream)
+        {
+            BinaryFormatter serializer = new BinaryFormatter();
+            try
+            {
+                foreach (Gesture gesture in ((Dictionary<Guid, Gesture>)serializer.Deserialize(FileStream)).Values)
+                {
+                    AddOrUpdateGesture(gesture);
+                }
+                Logger.Info("Sucessfully added gestures from FileStream");
                 return true;
             }
             catch (SerializationException exception)

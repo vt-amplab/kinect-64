@@ -208,7 +208,7 @@ namespace GestureRecognition
 
             if (BufferUpdatedEvent != null)
             {
-                BufferUpdatedEvent(this, _buffer[id], id, data.Joints[JointType.ShoulderCenter].Position);
+                BufferUpdatedEvent(this, _buffer[id], id, data.Joints[JointType.Spine].Position);
             }
         }
         #endregion
@@ -240,6 +240,11 @@ namespace GestureRecognition
         public static readonly JointType[] LeftArm = new JointType[] { 
                                         JointType.HandLeft, JointType.WristLeft, 
                                         JointType.ElbowLeft, JointType.ShoulderLeft
+                                    };
+
+        public static readonly JointType[] LowerLegs = new JointType[] {
+            JointType.FootLeft, JointType.AnkleLeft, JointType.KneeLeft, JointType.HipLeft,
+            JointType.FootRight, JointType.AnkleRight, JointType.KneeRight, JointType.HipRight
                                     };
 
         public static readonly JointType[] All = Enum.GetValues(typeof(JointType)).Cast<JointType>().ToArray();

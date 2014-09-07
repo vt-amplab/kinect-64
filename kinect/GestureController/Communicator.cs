@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -104,8 +105,15 @@ namespace GestureController
 
         public void Send(byte[] data)
         {
-            _client.BeginSend(data, 0, data.Length, 0,
-                new AsyncCallback(SendCallback), _client);
+            try
+            {
+                _client.BeginSend(data, 0, data.Length, 0,
+                    new AsyncCallback(SendCallback), _client);
+            }
+            catch (SocketException se)
+            {
+                Logger.Debug("Caught serial exception", se);
+            }
         }
 
         public void Receive()
@@ -146,6 +154,10 @@ namespace GestureController
                 Logger.Debug("Caught a socket exception in Connect Callback", e);
                 ConnectToClient();
             }
+            catch (Exception e)
+            {
+                Logger.Debug("Caught an exception", e);
+            }
         }
 
         private void ReceiveCallback(IAsyncResult ar)
@@ -162,7 +174,7 @@ namespace GestureController
                 if (bytesRead > 1 && DataReceivedEvent != null)
                 {
                     Logger.Debug("Finished receving data from server");
-                    DataReceivedEvent(state.buffer, state.BufferSize);
+                    DataReceivedEvent(state.buffer, bytesRead);
                 }
 
                 Receive();

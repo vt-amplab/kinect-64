@@ -83,37 +83,46 @@ namespace GestureController
             _timer = new System.Timers.Timer(1000);
             _timer.Enabled = true;
             _timer.Elapsed += _timer_Elapsed;
-
+            state = GameState.Unknown;
+            _gameStateDisplay.Text = state.ToString();
             communicator = new Communicator();
             communicator.DataReceivedEvent += DataReceivedFromServer;
-
-            ConnectToServer(null, null);
         }
 
         void DataReceivedFromServer(byte[] buffer, int bufferLength)
         {
             Logger.Debug("Received message from server of length: " + bufferLength);
-            state = (GameState)buffer[1];
-            _gameStateDisplay.Text = state.ToString();
-            switch (state)
+            if (bufferLength >= 2)
             {
-                case GameState.Fighting:
-                    break;
-                case GameState.GameOverP1Win:
-                    _timer.Interval = 10000;
-                    break;
-                case GameState.GameOverP2Win:
-                    _timer.Interval = 10000;
-                    break;
-                case GameState.PickCharacter:
-                    _timer.Interval = 1000;
-                    break;
-                case GameState.PickMap:
-                    _timer.Interval = 1000;
-                    break;
-                case GameState.SettingUp:
-                    _timer.Interval = 1000;
-                    break;
+                Logger.Debug("Server data: " + buffer[1]);
+                state = (GameState)buffer[1];
+                switch (state)
+                {
+                    case GameState.Fighting:
+                        _timer.Interval = 10000;
+                        _recognizer.StartRecognizing();
+                        break;
+                    case GameState.GameOverP1Win:
+                        _timer.Interval = 1000;
+                        _recognizer.StopRecognizing();
+                        break;
+                    case GameState.GameOverP2Win:
+                        _timer.Interval = 1000;
+                        _recognizer.StopRecognizing();
+                        break;
+                    case GameState.PickCharacter:
+                        _timer.Interval = 1000;
+                        _recognizer.StopRecognizing();
+                        break;
+                    case GameState.PickMap:
+                        _timer.Interval = 1000;
+                        _recognizer.StopRecognizing();
+                        break;
+                    case GameState.SettingUp:
+                        _timer.Interval = 1000;
+                        _recognizer.StopRecognizing();
+                        break;
+                }
             }
         }
 
@@ -138,7 +147,6 @@ namespace GestureController
                     {
                         ServerIP.IsEnabled = false;
                         ServerPort.IsEnabled = false;
-                        ConnectButton.IsEnabled = false;
                         int port = int.Parse(ServerPort.Text);
                         Task.Factory.StartNew(() =>
                         {
@@ -153,7 +161,6 @@ namespace GestureController
                             {
                                 ServerIP.IsEnabled = true;
                                 ServerPort.IsEnabled = true;
-                                ConnectButton.IsEnabled = true;
                                 Logger.Info("Unsuccessful connection attempt");
                             }
                         });
@@ -202,11 +209,10 @@ namespace GestureController
                 // Open document
                 Stream file = File.OpenRead(dlg.FileName);
                 _player1file.Text = dlg.FileName;
-                _recognizer.RebuildGesturesFromBinary(file);
+                _recognizer.AddGesturesFromFile(file);
                 file.Close();
                 Logger.Debug(_recognizer.RetrieveText());
                 _Status.Text = "Gestures loaded!";
-                ConnectButton.IsEnabled = true;
             }
         }
 
@@ -227,11 +233,10 @@ namespace GestureController
                 // Open document
                 Stream file = File.OpenRead(dlg.FileName);
                 _player1file.Text = dlg.FileName;
-                _recognizer.RebuildGesturesFromBinary(file);
+                _recognizer.AddGesturesFromFile(file);
                 file.Close();
                 Logger.Debug(_recognizer.RetrieveText());
                 _Status.Text = "Gestures loaded!";
-                ConnectButton.IsEnabled = true;
             }
         }
 
@@ -263,13 +268,15 @@ namespace GestureController
 
                 _tracker = new SkeletonTracker();
 
+                this._sensor.SkeletonStream.Enable();
+                this._sensor.SkeletonFrameReady += this.SkeletonFrameReadyHandler;
+                this._sensor.SkeletonFrameReady += _tracker.SkeletonFrameReadyHandler;
+
+                _tracker.BufferUpdatedEvent += this.SkeletonTrackerUpdatedHandler;
+
                 _recognizer = new GestureRecognizer(.9, 3, _tracker);
                 _recognizer.GestureRecognized += mapper.GestureRecognized;
                 _recognizer.GestureRecognized += this.GestureRecognized;
-
-                this._sensor.SkeletonStream.Enable();
-                this._sensor.SkeletonFrameReady += this.SkeletonFrameReadyHandler;
-                this._sensor.SkeletonFrameReady += _recognizer.FrameReadyHandler;
 
                 this._sensor.ColorStream.Enable(ColorImageFormat.RgbResolution640x480Fps30);
                 this._sensor.ColorFrameReady += this.ColorFrameReadyHandler;
@@ -288,6 +295,8 @@ namespace GestureController
 
                 _recognizer.StartRecognizing();
 
+                ConnectToServer(null, null);
+
                 try
                 {
                     this._sensor.Start();
@@ -305,30 +314,41 @@ namespace GestureController
         private void SkeletonTrackerUpdatedHandler(SkeletonTracker sender,
             List<Dictionary<JointType, Point3D>> buffer, int id, Point3D absolutePosition)
         {
-            if (absolutePosition.X > 0)
+            if (_recognizer.IsRecognizing)
             {
-                if (absolutePosition.X > .7)
+                if (absolutePosition.Y > .35)
                 {
-                    Logger.Debug("Player 1 moves left");
-                    mapper.SendAction("Move Left", 0);
+                    Logger.Debug("Jumping");
                 }
-                else if (absolutePosition.X < .3)
+                else if (absolutePosition.Y < -.1)
                 {
-                    Logger.Debug("Player 1 moves right");
-                    mapper.SendAction("Move Right", 0);
+                    Logger.Debug("Crouching");
                 }
-            }
-            else
-            {
-                if (absolutePosition.X > -.3)
+                if (absolutePosition.X > 0)
                 {
-                    Logger.Debug("Player 2 moves left");
-                    mapper.SendAction("Move Left", 1);
+                    if (absolutePosition.X > .7)
+                    {
+                        Logger.Debug("Player 2 moves right");
+                        mapper.SendAction("Move Right", 1);
+                    }
+                    else if (absolutePosition.X < .3)
+                    {
+                        Logger.Debug("Player 2 moves left");
+                        mapper.SendAction("Move Left", 1);
+                    }
                 }
-                else if (absolutePosition.X < -.7)
+                else
                 {
-                    Logger.Debug("Player 2 moves right");
-                    mapper.SendAction("Move Right", 1);
+                    if (absolutePosition.X > -.3)
+                    {
+                        Logger.Debug("Player 1 moves right");
+                        mapper.SendAction("Move Right", 0);
+                    }
+                    else if (absolutePosition.X < -.7)
+                    {
+                        Logger.Debug("Player 1 moves left");
+                        mapper.SendAction("Move Left", 0);
+                    }
                 }
             }
         }
@@ -342,6 +362,8 @@ namespace GestureController
         }
         private void SkeletonFrameReadyHandler(object sender, SkeletonFrameReadyEventArgs args)
         {
+            _gameStateDisplay.Text = state.ToString();
+            ServerStatus.Text = (communicator.IsConnected ? "Connected" : communicator.IsConnecting ? "Connecting" : "Disconnected");
             _fpsDisplay.Text = _recognizer.AverageFPS.ToString("N2");
             _recognizerBufferCount.Text = _recognizer.CurrentBufferSize + " frames";
             using (SkeletonFrame frame = args.OpenSkeletonFrame())

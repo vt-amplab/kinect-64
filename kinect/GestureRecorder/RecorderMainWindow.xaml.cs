@@ -85,8 +85,7 @@ namespace GestureRecorder
         {
             InitializeComponent();
 
-            _jointSelection.ItemsSource = Enum.GetValues(typeof(JointType)).Cast<JointType>().ToArray();
-            _jointSelection.SelectAll();
+            _useUpperBody.IsChecked = true;
 
             _actionSelector.ItemsSource = GestureToActionMapper.Actions.Keys;
             _actionSelector.SelectedIndex = 0;
@@ -416,7 +415,6 @@ namespace GestureRecorder
         {
             _actionSelector.IsEnabled = false;
             _lengthSlider.IsEnabled = false;
-            _jointSelection.IsEnabled = false;
             _testAllGestures.IsEnabled = false;
             _testGesture.IsEnabled = false;
             _recordGesture.IsEnabled = false;
@@ -427,7 +425,6 @@ namespace GestureRecorder
         {
             _actionSelector.IsEnabled = true;
             _lengthSlider.IsEnabled = true;
-            _jointSelection.IsEnabled = true;
             _testAllGestures.IsEnabled = true;
             _testGesture.IsEnabled = true;
             _recordGesture.IsEnabled = true;
@@ -446,16 +443,26 @@ namespace GestureRecorder
         {
             _statusText.Text = "Gesture capture finished";
 
+            List<JointType> jointsToKeep = new List<JointType>();
 
+            if ((bool)_useLowerBody.IsChecked)
+            {
+                jointsToKeep.AddRange(SkeletonNormalizer.LowerLegs);
+            }
+
+            if ((bool)_useUpperBody.IsChecked)
+            {
+                jointsToKeep.AddRange(SkeletonNormalizer.Forearms);
+            }
 
             foreach (Dictionary<JointType, Point3D> observation in args.Buffer)
             {
-                var keysToRemove = observation.Where(kvp => Array.IndexOf(_jointSelection.SelectedItems.Cast<JointType>().ToArray(), kvp.Key) < 0)
-                    .Select(kvp => kvp.Key).ToArray();
-                Logger.Debug("Number of keysToRemove: " + keysToRemove.Length);
-                foreach (JointType type in keysToRemove)
+                foreach (JointType type in observation.Keys)
                 {
-                    observation.Remove(type);
+                    if (!jointsToKeep.Contains(type))
+                    {
+                        observation.Remove(type);
+                    }
                 }
             }
 

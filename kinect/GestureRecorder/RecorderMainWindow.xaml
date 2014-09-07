@@ -22,8 +22,6 @@
         <ComboBox Name="_actionSelector" Margin="62,14,10,0" VerticalAlignment="Top" />
         <Label Content="Length:" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Width="Auto" Height="Auto"/>
         <Slider Margin="62,49,10,0" Name="_lengthSlider" VerticalAlignment="Top" Minimum="20" Maximum="100" Value="32" TickPlacement="BottomRight"/>
-        <ListBox Name="_jointSelection" SelectionMode="Extended" Margin="10,103,10,110"/>
-        <Label Content="Joints to Include:" Margin="15,72,15,0" VerticalAlignment="Top" HorizontalAlignment="Center"/>
         <Button Content="Record Gesture" Name="_recordGesture" Click="CaptureGesture_Click" Height="20" Margin="10,0,10,85" VerticalAlignment="Bottom"/>
         <Button Click="_testGesture_Click" Content="Test Gesture" Name="_testGesture" Height="Auto" VerticalAlignment="Bottom" Margin="10,0,10,60"/>
         <Label Content="File Name:" HorizontalAlignment="Left" Margin="10,0,0,35" Grid.Row="1" Grid.Column="0" Height="26" Width="Auto" VerticalAlignment="Bottom"/>
@@ -41,5 +39,7 @@
         <TextBlock Name="_recognizerBufferCount" Margin="157,0,10,97" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Bottom"/>
         <TextBlock Name="_learnerBufferCount" Margin="137,0,10,128" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Bottom"/>
         <Button Content="Stop" IsEnabled="False" Name="_stop" Click="_stop_Click" Margin="10,0,10,10" Height="20" VerticalAlignment="Bottom"/>
+        <CheckBox Content="Use Lower Body" Name="_useLowerBody" Margin="10,78,10,0" VerticalAlignment="Top"/>
+        <CheckBox Content="Use Upper Body" Name="_useUpperBody" Margin="10,98,10,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>
