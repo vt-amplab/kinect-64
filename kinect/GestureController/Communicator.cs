@@ -27,9 +27,6 @@ namespace GestureController
         public delegate void DataReceived(byte[] buffer, int bufferLength);
         public event DataReceived DataReceivedEvent;
 
-        private ManualResetEvent connectDone = new ManualResetEvent(false);
-        private ManualResetEvent sendDone = new ManualResetEvent(false);
-        private ManualResetEvent receiveDone = new ManualResetEvent(false);
         private bool _connected;
         private bool _connecting;
 
@@ -71,9 +68,9 @@ namespace GestureController
                     _client = new Socket(_remoteEP.AddressFamily,
                         SocketType.Stream, ProtocolType.Tcp);
 
-                    _client.BeginConnect(_remoteEP,
+                    IAsyncResult result = _client.BeginConnect(_remoteEP,
                         new AsyncCallback(ConnectCallback), _client);
-                    connectDone.WaitOne(5000);
+                    result.AsyncWaitHandle.WaitOne(5000);
                     success = _client.Connected;
                     if (!success)
                     {
@@ -107,7 +104,6 @@ namespace GestureController
 
         public void Send(byte[] data)
         {
-            sendDone.Reset();
             _client.BeginSend(data, 0, data.Length, 0,
                 new AsyncCallback(SendCallback), _client);
         }
@@ -122,18 +118,12 @@ namespace GestureController
                 _client.BeginReceive(state.buffer, 0,
                     CommunicatorStateObject.MaxBufferSize, 0,
                     new AsyncCallback(ReceiveCallback), state);
-                receiveDone.Reset();
             }
             catch (SocketException e)
             {
                 Logger.Debug("Exception encountered in Receive", e);
                 ConnectToClient();
             }
-        }
-
-        public void WaitForReceive()
-        {
-            receiveDone.WaitOne();
         }
 
         private void ConnectCallback(IAsyncResult ar)
@@ -144,7 +134,6 @@ namespace GestureController
 
                 client.EndConnect(ar);
                 Logger.Debug("Connect completed");
-                connectDone.Set();
                 _connected = true;
                 _connecting = false;
             }
@@ -168,23 +157,15 @@ namespace GestureController
 
                 int bytesRead = client.EndReceive(ar);
 
-                if (bytesRead > 0)
+                Logger.Debug("Received " + bytesRead + " bytes from server.");
+
+                if (bytesRead > 1 && DataReceivedEvent != null)
                 {
-                    Console.WriteLine("Received {0} bytes in response", bytesRead);
-                    state.BufferSize += bytesRead;
-                    client.BeginReceive(state.buffer, state.BufferSize,
-                        CommunicatorStateObject.MaxBufferSize - state.BufferSize,
-                        0, new AsyncCallback(ReceiveCallback), state);
+                    Logger.Debug("Finished receving data from server");
+                    DataReceivedEvent(state.buffer, state.BufferSize);
                 }
-                else
-                {
-                    if (state.BufferSize > 1 && DataReceivedEvent != null)
-                    {
-                        DataReceivedEvent(state.buffer, state.BufferSize);
-                    }
-                    receiveDone.Set();
-                    Receive();
-                }
+
+                Receive();
             }
             catch (SocketException e)
             {
@@ -201,8 +182,6 @@ namespace GestureController
 
                 int bytesSent = client.EndSend(ar);
                 Console.WriteLine("Sent {0} bytes to server", bytesSent);
-
-                sendDone.Set();
             }
             catch (SocketException e)
             {

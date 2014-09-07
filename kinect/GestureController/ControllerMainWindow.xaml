@@ -32,5 +32,7 @@
         <Label Content="Buffer Count:" HorizontalAlignment="Left" Margin="10,0,0,10" VerticalAlignment="Bottom"/>
         <TextBlock HorizontalAlignment="Right" Name="_recognizerBufferCount" Margin="0,0,490,15" TextWrapping="Wrap" Text="Buf" VerticalAlignment="Bottom"/>
         <TextBlock Name="_Status" HorizontalAlignment="Left" Margin="10,122,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Width="616"/>
+        <TextBlock Name="_gameStateDisplay" Margin="86,240,10,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top"/>
+        <Label Content="Game State:" HorizontalAlignment="Left" Margin="10,235,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>

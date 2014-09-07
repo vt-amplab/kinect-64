@@ -49,6 +49,8 @@ namespace GestureController
         private int gesturesRecognized;
         private System.Timers.Timer _timer;
 
+        private GameState state;
+
         private readonly Dictionary<JointType, Brush> _jointColors = new Dictionary<JointType, Brush>
         { 
             {JointType.HipCenter, new SolidColorBrush(Color.FromRgb(169, 176, 155))},
@@ -79,8 +81,10 @@ namespace GestureController
 
             gesturesRecognized = 0;
             _timer = new System.Timers.Timer(1000);
+            _timer.Enabled = true;
             _timer.Elapsed += _timer_Elapsed;
 
+            communicator = new Communicator();
             communicator.DataReceivedEvent += DataReceivedFromServer;
 
             ConnectToServer(null, null);
@@ -89,12 +93,35 @@ namespace GestureController
         void DataReceivedFromServer(byte[] buffer, int bufferLength)
         {
             Logger.Debug("Received message from server of length: " + bufferLength);
+            state = (GameState)buffer[1];
+            _gameStateDisplay.Text = state.ToString();
+            switch (state)
+            {
+                case GameState.Fighting:
+                    break;
+                case GameState.GameOverP1Win:
+                    _timer.Interval = 10000;
+                    break;
+                case GameState.GameOverP2Win:
+                    _timer.Interval = 10000;
+                    break;
+                case GameState.PickCharacter:
+                    _timer.Interval = 1000;
+                    break;
+                case GameState.PickMap:
+                    _timer.Interval = 1000;
+                    break;
+                case GameState.SettingUp:
+                    _timer.Interval = 1000;
+                    break;
+            }
         }
 
         void _timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             if (communicator.IsConnected)
             {
+                Logger.Debug("Sending Heartbeat");
                 communicator.Send(new HeartbeatMessage().GetMessageBytes());
             }
         }
@@ -232,7 +259,6 @@ namespace GestureController
             }
             else
             {
-                communicator = new Communicator();
                 mapper = new GestureToActionMapper(communicator);
 
                 _tracker = new SkeletonTracker();

@@ -154,6 +154,16 @@ namespace GestureController
         MHeartbeat
     }
 
+    public enum GameState
+    {
+        SettingUp = 1,
+        PickCharacter,
+        PickMap,
+        Fighting,
+        GameOverP1Win,
+        GameOverP2Win
+    }
+
     public enum Character
     {
         Luigi = 0,
