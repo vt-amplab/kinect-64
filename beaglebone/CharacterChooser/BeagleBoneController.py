@@ -25,7 +25,18 @@ while True:
         start = unpack('BB', start)
         if start[1] == 2:
             break
+        if start[1] == 5:
+            cr.send_lights('2', 'K')
+        elif start[1] == 6:
+            cr.send_lights('1', 'K')
+        time.sleep(3)
+        if start[1] == 5:
+            cr.send_lights('2', 'A')
+        elif start[1] == 6:
+            cr.send_lights('1', 'A')
 
+    cr.send_lights('1', 'N')
+    cr.send_lights('2', 'N')
     p1Choice, p2Choice = cr.choose()
 
     print "P1: ", p1Choice
