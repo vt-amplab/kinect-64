@@ -26,3 +26,6 @@ while True:
 
     ret, thr = cv2.threshold(gray, 50 + i*10, 130, cv2.THRESH_BINARY)
     cv2.imshow('thresh', thr)
+
+cv2.destroyAllWindows()
+cap.release()
