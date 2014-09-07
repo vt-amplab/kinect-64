@@ -15,7 +15,7 @@ print cap.get(4)
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 cv2.imshow('gray', gray)
 
-ret, thr = cv2.threshold(gray, 40, 130, cv2.THRESH_BINARY)
+ret, thr = cv2.threshold(gray, 70, 130, cv2.THRESH_BINARY)
 cv2.imshow('thresh', thr)
 
 contours1, h = cv2.findContours(thr, 1, 1)
@@ -29,33 +29,33 @@ for cnt in contours1:
         print len(approx)
         cv2.drawContours(img, cnt, -1, (0, 255, 0), 5)
 
-        if (len(approx) >= 12) and (len(approx) <= 16) and (area > 4100) and (area < 4450):
+        if (len(approx) >= 13) and (len(approx) <= 14) and (area > 4200) and (area < 4600):
             print "DK"
             cv2.drawContours(img, [cnt], 0, (255, 0, 0), -1)
-        elif (len(approx) >= 10) and (len(approx) <= 14) and (area > 4500) and (area < 4900):
+        elif (len(approx) >= 11) and (len(approx) <= 13) and (area > 4700) and (area < 5000):
             print "Yoshi"
             cv2.drawContours(img, [cnt], 0, (0, 0, 255), -1)
-        elif (len(approx) >= 14) and (len(approx) <= 18) and (area > 3200) and (area < 3600):
+        elif (len(approx) >= 18) and (len(approx) <= 22) and (area > 4400) and (area < 5000):
             print "Falcon"
             cv2.drawContours(img, [cnt], 0, (0, 100, 255), -1)
-        # elif (len(approx) >= 11) and (len(approx) <= 12) and (area2>22200) and (area < 2500):
-        #     print "Pika"
-        #     cv2.drawContours(img, [cnt], 0, (100, 100, 255), -1)
-        # elif (len(approx) >= 6) and (len(approx) <= 8) and (area > 900) and (area < 1150):
-        #     print "Luigi"
-        #     cv2.drawContours(img, [cnt], 0, (100, 100, 100), -1)
-        # elif (len(approx) >= 9) and (len(approx) <= 11) and (area > 2100) and (area < 2400):
-        #     print "Kirby"
-        #     cv2.drawContours(img, [cnt], 0, (100, 0, 255), -1)
+        elif (len(approx) >= 10) and (len(approx) <= 12) and (area > 2800) and (area < 3200):
+            print "Pika"
+            cv2.drawContours(img, [cnt], 0, (100, 100, 255), -1)
+        elif (len(approx) >= 6) and (len(approx) <= 8) and (area > 1200) and (area < 1450):
+            print "Luigi"
+            cv2.drawContours(img, [cnt], 0, (100, 100, 100), -1)
+        elif (len(approx) >= 9) and (len(approx) <= 11) and (area > 2750) and (area < 3100):
+            print "Kirby"
+            cv2.drawContours(img, [cnt], 0, (100, 0, 255), -1)
         # elif (len(approx) >= 6) and (len(approx) <= 10) and (area > 1250) and (area < 2400):
         #     print "Ness"
         #     cv2.drawContours(img, [cnt], 0, (100, 150, 255), -1)
         # elif (len(approx) >= 13) and (len(approx) <= 17) and (area > 5800) and (area < 6400):
         #     print "Samus"
         #     cv2.drawContours(img, [cnt], 0, (0, 255, 0), -1)
-        # elif (len(approx) >= 12) and (len(approx) <= 16) and (area > 1900) and (area < 2300):
-        #     print "Mario"
-        #     cv2.drawContours(img, [cnt], 0, (255, 255, 255), -1)
+        elif (len(approx) >= 12) and (len(approx) <= 15) and (area > 2300) and (area < 2600):
+            print "Mario"
+            cv2.drawContours(img, [cnt], 0, (255, 255, 255), -1)
         # elif (len(approx) >= 15) and (len(approx) <= 20) and (area > 2500) and (area < 3050):
         #     print "Fox"
         #     cv2.drawContours(img, [cnt], 0, (255, 0, 255), -1)

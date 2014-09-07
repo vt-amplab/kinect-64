@@ -1,8 +1,8 @@
 import cv2
 
 cap = cv2.VideoCapture(0)
-cap.set(3, 500)
-cap.set(4, 720)
+cap.set(3, 640)
+cap.set(4, 480)
 
 ret, img = cap.read()
 while not ret:

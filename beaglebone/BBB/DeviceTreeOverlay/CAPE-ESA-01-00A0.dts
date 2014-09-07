@@ -1,0 +1,325 @@
+/*
+* Jacob Yacovelli
+*
+* ESA cape
+*/
+/dts-v1/;
+/plugin/;
+
+/*
+ * Pin assignments
+ *
+ * Module        Connector
+ * SWDRVA        P8.07
+ * SWDRVB        P8.08
+ * LNA_PWR_CTRL  P8.09
+ * GP_LED0       P8.10
+ * GP_LED1       P8.11
+ * DACLDAC       P8.12
+ * DACBUSY       P8.13
+ * UART-4-TX-EN  P8.14
+ * UART-5-TX     P8.37
+ * UART-5-RX     P8.38
+ * UART-4-RX     P9.11
+ * UART-4-TX     P9.13
+ * DACSYNC       P9.17
+ * DACMOSI       P9.18
+ * I2C_SCL_CAPE  P9.19
+ * I2C_SDA_CAPE  P9.20
+ * DACMISO       P9.21
+ * DACSCLK       P9.22
+ * DACRESET      P9.23
+ * I2C_SCL_ESA   P9.24
+ * I2C_SDA_ESA   P9.26
+ *
+ */
+
+/ {
+	compatible = "ti,beaglebone-black";
+	part-number = "CAPE-ESA-01";
+	version = "00A0";
+
+	/* state the resources this cape uses */
+	exclusive-use =
+		/* the pin header uses */
+		"P8.07",    /* gpio:  gpio2_2 */
+		"P8.08",    /* gpio:  gpio2_3 */
+		"P8.09",    /* gpio:  gpio2_5 */
+		"P8.10",    /* gpio:  gpio2_4 */
+		"P8.11",    /* gpio:  gpio1_13 */
+		"P8.12",    /* gpio:  gpio1_12 */
+		"P8.13",    /* gpio:  gpio0_23 */
+		"P8.14",    /* gpio:  gpio0_26 */
+		"P8.37",    /* uart:  uart5_txd */
+		"P8.38",    /* uart:  uart5_rxd */
+		"P9.11",    /* uart:  uart4_rxd_mux2 */
+		"P9.13",    /* uart:  uart4_txd_mux2 */
+		"P9.17",    /* spi:   spi0_cs0 */
+		"P9.18",    /* spi:   spi0_d1 */
+		/*"P9.19",*/    /* i2c:   I2C2_SCL */
+		/*"P9.20",*/    /* i2c:   I2C2_SDA */
+		"P9.21",    /* spi:   spi0_d0 */
+		"P9.22",    /* spi:   spi0_sclk */
+		"P9.23",    /* gpio:  gpio1_17 */
+		"P9.24",    /* i2c:   I2C1_SCL */
+		"P9.26",    /* i2c:   I2C1_SDA */
+		"P9.39",    /* AIN0 */
+        "P9.40",    /* AIN1 */
+        "P9.37",    /* AIN2 */
+        "P9.38",    /* AIN3 */
+        "P9.33",    /* AIN4 */
+        "P9.36",    /* AIN5 */
+        "P9.35",    /* AIN6 */
+
+		/* the hardware IP uses */
+		"gpio2_2",
+		"gpio2_3",
+		"gpio2_5",
+		"gpio2_4",
+		"gpio1_13",
+		"gpio1_12",
+		"gpio0_23",
+		"gpio0_26",
+		"uart5",
+		"uart4",
+		"spi0",
+		"gpio1_17",
+		"i2c1",
+		"i2c2",
+		"tscadc";
+
+	fragment@0 {
+		target = <&am33xx_pinmux>;
+		__overlay__ {
+			gpio_swdrv_pins: pinmux_gpio_swdrv_pins {
+				pinctrl-single,pins = <
+					0x090  0x07     /* gpio2_2 | OUTPUT | MODE7 */
+					0x094  0x07     /* gpio2_3 | OUTPUT | MODE7 */
+				>;
+			};
+
+			gpio_lna_pins: pinmux_gpio_lna_pins {
+				pinctrl-single,pins = <
+					0x09c  0x07     /* gpio2_5 | OUTPUT | MODE7 */
+				>;
+			};
+
+			gpio_led_pins: pinmux_gpio_led_pins {
+				pinctrl-single,pins = <
+					0x098  0x07     /* gpio2_4 | OUTPUT | MODE7 */
+					0x034  0x07     /* gpio1_13 | OUTPUT | MODE7 */
+				>;
+			};
+
+			gpio_dac_pins: pinmux_gpio_dac_pins {
+				pinctrl-single,pins = <
+					0x030  0x07     /* gpio1_12 | OUTPUT | MODE7 */
+					0x024  0x2F     /* gpio0_23 | INPUT  | MODE7 */
+					0x044  0x07     /* gpio1_17 | OUTPUT | MODE7 */
+				>;
+			};
+
+			gpio_uart4_pins: pinmux_gpio_uart4_pins {
+				pinctrl-single,pins = <
+					0x028  0x07     /* gpio0_26 | OUTPUT | MODE7 */
+				>;
+			};
+
+			uart5_pins: pinmux_uart5_pins {
+				pinctrl-single,pins = <
+					0x0C0 0x04	    /* uart5_txd | MODE4 */
+					0x0C4 0x24	    /* uart5_rxd | MODE4 */
+				>;
+			};
+
+			uart4_pins: pinmux_uart4_pins {
+				pinctrl-single,pins = <
+					0x070 0x26	    /* uart4_rxd | MODE6 */
+					0x074 0x06	    /* uart4_txd | MODE6 */
+				>;
+			};
+
+			spi0_dac_pins: pinmux_spi0_dac_pins {
+				pinctrl-single,pins = <
+					0x15c 0x10	    /* spi0_cs0, OUTPUT_PULLUP | MODE0 */
+					0x158 0x10	    /* spi0_d1, OUTPUT_PULLUP | MODE0 */
+					0x154 0x30	    /* spi0_d0, INPUT_PULLUP | MODE0 */
+					0x150 0x30	    /* spi0_sclk, INPUT_PULLUP | MODE0 */
+				>;
+			};
+
+			i2c1_esa_pins: pinmux_i2c1_esa_pins {
+				pinctrl-single,pins = <
+					0x184 0x73	    /* i2c1_scl, SLEWCTRL_SLOW | INPUT_PULLUP | MODE3 */
+					0x180 0x73	    /* i2c1_sda, SLEWCTRL_SLOW | INPUT_PULLUP | MODE3 */
+				>;
+			};
+
+			i2c2_cape_pins: pinmux_i2c2_cape_pins {
+				pinctrl-single,pins = <
+					0x17c 0x73	    /* i2c2_scl, SLEWCTRL_SLOW | INPUT_PULLUP | MODE3 */
+					0x178 0x73	    /* i2c2_sda, SLEWCTRL_SLOW | INPUT_PULLUP | MODE3 */
+				>;
+			};
+		};
+	};
+	
+	fragment@1 {
+		target = <&ocp>;
+		__overlay__ {
+			swdrv_pinmux_helper {
+				compatible = "bone-pinmux-helper";
+				pinctrl-names = "default";
+				pinctrl-0 = <&gpio_swdrv_pins>;
+				status = "okay";
+			};
+
+			lna_pinmux_helper {
+				compatible = "bone-pinmux-helper";
+				pinctrl-names = "default";
+				pinctrl-0 = <&gpio_lna_pins>;
+				status = "okay";
+			};
+
+			led_pinmux_helper {
+				compatible = "bone-pinmux-helper";
+				pinctrl-names = "default";
+				pinctrl-0 = <&gpio_led_pins>;
+				status = "okay";
+			};
+
+			dac_pinmux_helper {
+				compatible = "bone-pinmux-helper";
+				pinctrl-names = "default";
+				pinctrl-0 = <&gpio_dac_pins>;
+				status = "okay";
+			};
+
+			uart4_pinmux_helper {
+				compatible = "bone-pinmux-helper";
+				pinctrl-names = "default";
+				pinctrl-0 = <&gpio_uart4_pins>;
+				status = "okay";
+			};
+		};
+	};
+
+	fragment@2 {
+		target = <&uart6>;      /* really uart5 */
+		__overlay__ {
+			pinctrl-names = "default";
+			pinctrl-0 = <&uart5_pins>;
+			status = "okay";			
+		};
+	};
+
+	fragment@3 {
+		target = <&uart5>;      /* really uart4 */
+		__overlay__ {
+			pinctrl-names = "default";
+			pinctrl-0 = <&uart4_pins>;
+			status = "okay";
+		};
+	};
+
+	fragment@4 {
+		target = <&spi0>;       /* spi0 is numbered correctly */
+		__overlay__ {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			pinctrl-names = "default";
+			pinctrl-0 = <&spi0_dac_pins>;
+			status = "okay";
+
+			channel@0 {
+				#address-cells = <1>;
+				#size-cells = <0>;
+
+				compatible = "spidev";
+
+				reg = <0>;
+				spi-max-frequency = <16000000>;
+				spi-cpha;
+			};
+
+			channel@1 {
+				#address-cells = <1>;
+				#size-cells = <0>;
+
+				compatible = "spidev";
+
+				reg = <1>;
+				spi-max-frequency = <16000000>;
+			};
+		};
+	};
+
+	fragment@5 {
+		target = <&i2c1>;       /* i2c1 is numbered correctly */
+		__overlay__ {
+			status = "okay";
+			pinctrl-names = "default";
+			pinctrl-0 = <&i2c1_esa_pins>;
+
+			/* this is the configuration part */
+			clock-frequency = <100000>;     
+
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			};
+		};
+	
+	fragment@6 {
+		target = <&i2c2>;       /* i2c2 is numbered correctly */
+		__overlay__ {
+			status = "okay";
+			pinctrl-names = "default";
+			pinctrl-0 = <&i2c2_cape_pins>;
+
+			/* this is the configuration part */
+			clock-frequency = <100000>;     
+
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+
+			/* MCP79410 RTC module */
+			rtc@68 {
+				compatible = "maxim,ds1338";
+				reg = <0x68>;
+			};
+		};
+	};
+
+	fragment@7 {
+		target = <&ocp>;
+		__overlay__ {
+			/* avoid stupid warning */
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			tscadc {
+				compatible = "ti,ti-tscadc";
+				reg = <0x44e0d000 0x1000>;
+
+				interrupt-parent = <&intc>;
+				interrupts = <16>;
+				ti,hwmods = "adc_tsc";
+				status = "okay";
+
+				adc {
+					ti,adc-channels = <0 1 2 3 4 5 6 7>;
+				};
+			};
+
+			test_helper: helper {
+				compatible = "bone-iio-helper";
+				vsense-name  = "AIN0", "AIN1", "AIN2", "AIN3", "AIN4", "AIN5", "AIN6", "AIN7";
+				vsense-scale = <100     100     100     100     100     100     100     100>;
+				status = "okay";
+			};
+		};
+	};
+};
