@@ -1,4 +1,4 @@
-﻿#define USE_3D_GESTURES
+﻿//#define USE_3D_GESTURES
 
 using System;
 using System.Collections;

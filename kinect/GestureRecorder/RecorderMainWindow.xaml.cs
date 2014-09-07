@@ -85,7 +85,7 @@ namespace GestureRecorder
         {
             InitializeComponent();
 
-            _useUpperBody.IsChecked = true;
+            _useUpperLeft.IsChecked = true;
 
             _actionSelector.ItemsSource = GestureToActionMapper.Actions.Keys;
             _actionSelector.SelectedIndex = 0;
@@ -445,19 +445,31 @@ namespace GestureRecorder
 
             List<JointType> jointsToKeep = new List<JointType>();
 
-            if ((bool)_useLowerBody.IsChecked)
+            if ((bool)_useLowerRight.IsChecked)
             {
-                jointsToKeep.AddRange(SkeletonNormalizer.LowerLegs);
+                jointsToKeep.AddRange(SkeletonNormalizer.RightLegs);
             }
 
-            if ((bool)_useUpperBody.IsChecked)
+            if ((bool)_useUpperLeft.IsChecked)
             {
-                jointsToKeep.AddRange(SkeletonNormalizer.Forearms);
+                jointsToKeep.AddRange(SkeletonNormalizer.LeftForearm);
+            }
+
+            if ((bool)_useUpperRight.IsChecked)
+            {
+                jointsToKeep.AddRange(SkeletonNormalizer.RightForearm);
+            }
+
+            if ((bool)_useLowerLeft.IsChecked)
+            {
+                jointsToKeep.AddRange(SkeletonNormalizer.LeftLegs);
             }
 
             foreach (Dictionary<JointType, Point3D> observation in args.Buffer)
             {
-                foreach (JointType type in observation.Keys)
+                var keys = new List<JointType>(observation.Keys);
+                foreach (JointType type in keys
+)
                 {
                     if (!jointsToKeep.Contains(type))
                     {
@@ -529,5 +541,6 @@ namespace GestureRecorder
             file.Close();
             _statusText.Text += "Saved to " + fileName;
         }
+
     }
 }

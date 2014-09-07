@@ -232,7 +232,7 @@ namespace GestureController
             {
                 // Open document
                 Stream file = File.OpenRead(dlg.FileName);
-                _player1file.Text = dlg.FileName;
+                _player2file.Text = dlg.FileName;
                 _recognizer.AddGesturesFromFile(file);
                 file.Close();
                 Logger.Debug(_recognizer.RetrieveText());
@@ -274,7 +274,7 @@ namespace GestureController
 
                 _tracker.BufferUpdatedEvent += this.SkeletonTrackerUpdatedHandler;
 
-                _recognizer = new GestureRecognizer(.9, 3, _tracker);
+                _recognizer = new GestureRecognizer(.8, 3, _tracker);
                 _recognizer.GestureRecognized += mapper.GestureRecognized;
                 _recognizer.GestureRecognized += this.GestureRecognized;
 
@@ -316,38 +316,42 @@ namespace GestureController
         {
             if (_recognizer.IsRecognizing)
             {
-                if (absolutePosition.Y > .35)
+                byte player = (byte)(absolutePosition.X > 0 ? 1 : 0);
+                if (absolutePosition.Y > .7)
                 {
-                    Logger.Debug("Jumping");
+                    Logger.Debug("Jumping player " + (player + 1));
+                    mapper.SendAction("Jump", player);
                 }
-                else if (absolutePosition.Y < -.1)
+                else if (absolutePosition.Y < 0.4)
                 {
-                    Logger.Debug("Crouching");
+                    Logger.Debug("Crouching player " + (player + 1));
+                    mapper.SendAction("Crouch", player);
                 }
-                if (absolutePosition.X > 0)
+
+                if (absolutePosition.X > .1)
                 {
-                    if (absolutePosition.X > .7)
+                    if (absolutePosition.X > .875)
                     {
                         Logger.Debug("Player 2 moves right");
-                        mapper.SendAction("Move Right", 1);
+                        mapper.SendAction("Move Right", player);
                     }
-                    else if (absolutePosition.X < .3)
+                    else if (absolutePosition.X < .4)
                     {
                         Logger.Debug("Player 2 moves left");
-                        mapper.SendAction("Move Left", 1);
-                    }
+                        mapper.SendAction("Move Left", player);
+                   } 
                 }
-                else
+                else if(absolutePosition.X < -.1)
                 {
-                    if (absolutePosition.X > -.3)
+                    if (absolutePosition.X > -.375)
                     {
                         Logger.Debug("Player 1 moves right");
-                        mapper.SendAction("Move Right", 0);
+                        mapper.SendAction("Move Right", player);
                     }
-                    else if (absolutePosition.X < -.7)
+                    else if (absolutePosition.X < -.875)
                     {
                         Logger.Debug("Player 1 moves left");
-                        mapper.SendAction("Move Left", 0);
+                        mapper.SendAction("Move Left", player);
                     }
                 }
             }
