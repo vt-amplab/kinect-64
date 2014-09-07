@@ -33,6 +33,8 @@ namespace GestureController
         private bool _connected;
         private bool _connecting;
 
+        private IPEndPoint _remoteEP;
+
         public bool IsConnected
         {
             get
@@ -52,23 +54,41 @@ namespace GestureController
 
         public void StartClient(IPAddress address, int port)
         {
+            _remoteEP = new IPEndPoint(address, port);
+            ConnectToClient();
+        }
+
+        private void ConnectToClient() 
+        {
             try
             {
-                IPEndPoint remoteEP = new IPEndPoint(address, port);
-
-                _client = new Socket(address.AddressFamily,
-                    SocketType.Stream, ProtocolType.Tcp);
                 _connecting = true;
                 Logger.Debug("Beginning Async Kinect");
-                _client.BeginConnect(remoteEP,
-                    new AsyncCallback(ConnectCallback), _client);
-                connectDone.WaitOne();
+
+                bool success = false;
+                while (!success)
+                {
+                    _client = new Socket(_remoteEP.AddressFamily,
+                        SocketType.Stream, ProtocolType.Tcp);
+
+                    _client.BeginConnect(_remoteEP,
+                        new AsyncCallback(ConnectCallback), _client);
+                    connectDone.WaitOne(5000);
+                    success = _client.Connected;
+                    if (!success)
+                    {
+                        _client.Close();
+                        Logger.Debug("Connection Failed -- will try again");
+                    }
+                }
+
+                Logger.Debug("Connected to server");
 
                 Receive();
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.ToString());
+                Logger.Debug("Exception encountered", e);
             }
         }
 
@@ -81,7 +101,7 @@ namespace GestureController
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.ToString());
+                Logger.Debug("Exception encountered", e);
             }
         }
 
@@ -104,9 +124,10 @@ namespace GestureController
                     new AsyncCallback(ReceiveCallback), state);
                 receiveDone.Reset();
             }
-            catch (Exception e)
+            catch (SocketException e)
             {
-                Console.WriteLine(e.ToString());
+                Logger.Debug("Exception encountered in Receive", e);
+                ConnectToClient();
             }
         }
 
@@ -120,15 +141,21 @@ namespace GestureController
             try
             {
                 Socket client = (Socket)ar.AsyncState;
+
                 client.EndConnect(ar);
                 Logger.Debug("Connect completed");
                 connectDone.Set();
                 _connected = true;
                 _connecting = false;
             }
-            catch (Exception e)
+            catch (ObjectDisposedException e)
             {
-                Console.WriteLine(e.ToString());
+                Logger.Debug("Caught a disposed exception in Connect Callback");
+            }
+            catch (SocketException e)
+            {
+                Logger.Debug("Caught a socket exception in Connect Callback", e);
+                ConnectToClient();
             }
         }
 
@@ -159,9 +186,10 @@ namespace GestureController
                     Receive();
                 }
             }
-            catch (Exception e)
+            catch (SocketException e)
             {
-                Console.WriteLine(e.ToString());
+                Logger.Debug("Exception encountered", e);
+                ConnectToClient();
             }
         }
 
@@ -176,9 +204,10 @@ namespace GestureController
 
                 sendDone.Set();
             }
-            catch (Exception e)
+            catch (SocketException e)
             {
-                Console.WriteLine(e.ToString());
+                Logger.Debug("Exception encountered", e);
+                ConnectToClient();
             }
         }
     }

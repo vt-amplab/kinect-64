@@ -55,21 +55,20 @@ namespace GestureController
             if (comm.IsConnected)
             {
                 Console.WriteLine("Sending " + label);
-                AttackMessage mesg = Actions[label];
-                mesg.SetPlayer(player);
-                byte[] mesgBytes = mesg.GetMessageBytes();
-                comm.Send(mesgBytes);
+                AttackMessage mesg;
+                if (GestureToActionMapper.Actions.TryGetValue(label, out mesg))
+                {
+                    mesg.SetPlayer(player);
+                    byte[] mesgBytes = mesg.GetMessageBytes();
+                    comm.Send(mesgBytes);
+                }
+                else
+                {
+                    Logger.Warn("Tried to send an action which doesn't exsit: " + label);
+                }
             }
         }
 
-    }
-
-    public struct PackedMessage
-    {
-        public byte Type;
-        public byte movement;
-        public byte attack;
-        public byte player_selection;
     }
 
     public abstract class Message
@@ -100,6 +99,19 @@ namespace GestureController
         public override byte[] GetMessageBytes()
         {
             return new byte[] { (byte)mode, (byte)direction, (byte)attack, player };
+        }
+    }
+
+    public class HeartbeatMessage : Message
+    {
+        public HeartbeatMessage()
+        {
+            this.mode = Mode.MHeartbeat;
+        }
+
+        public override byte[] GetMessageBytes()
+        {
+            return new byte[] { (byte)this.mode, 0, 0, 0 };
         }
     }
 
@@ -138,7 +150,8 @@ namespace GestureController
     public enum Mode {
         MCharacter = 0,
         MAttack,
-        MMap
+        MMap,
+        MHeartbeat
     }
 
     public enum Character
@@ -189,4 +202,5 @@ namespace GestureController
         SaffronCity,
         Random
     }
+
 }

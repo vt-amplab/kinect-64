@@ -47,6 +47,7 @@ namespace GestureController
         private WriteableBitmap _colorBitmap;
         private WriteableBitmap _depthBitmap;
         private int gesturesRecognized;
+        private System.Timers.Timer _timer;
 
         private readonly Dictionary<JointType, Brush> _jointColors = new Dictionary<JointType, Brush>
         { 
@@ -77,6 +78,25 @@ namespace GestureController
             InitializeComponent();
 
             gesturesRecognized = 0;
+            _timer = new System.Timers.Timer(1000);
+            _timer.Elapsed += _timer_Elapsed;
+
+            communicator.DataReceivedEvent += DataReceivedFromServer;
+
+            ConnectToServer(null, null);
+        }
+
+        void DataReceivedFromServer(byte[] buffer, int bufferLength)
+        {
+            Logger.Debug("Received message from server of length: " + bufferLength);
+        }
+
+        void _timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            if (communicator.IsConnected)
+            {
+                communicator.Send(new HeartbeatMessage().GetMessageBytes());
+            }
         }
 
         private void ConnectToServer(object sender, RoutedEventArgs e)
@@ -89,6 +109,9 @@ namespace GestureController
                     IPAddress address;
                     if (IPAddress.TryParse(ServerIP.Text, out address))
                     {
+                        ServerIP.IsEnabled = false;
+                        ServerPort.IsEnabled = false;
+                        ConnectButton.IsEnabled = false;
                         int port = int.Parse(ServerPort.Text);
                         Task.Factory.StartNew(() =>
                         {
@@ -103,6 +126,7 @@ namespace GestureController
                             {
                                 ServerIP.IsEnabled = true;
                                 ServerPort.IsEnabled = true;
+                                ConnectButton.IsEnabled = true;
                                 Logger.Info("Unsuccessful connection attempt");
                             }
                         });
