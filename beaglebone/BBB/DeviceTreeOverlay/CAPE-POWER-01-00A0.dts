@@ -1,0 +1,549 @@
+/*
+* Jacob Yacovelli
+* Modified by William Gerhard
+* POWER cape
+*/
+/dts-v1/;
+/plugin/;
+
+/*
+ * Pin assignments
+ *
+ * Module        Connector
+ * SWDRVA        P8.07
+ * SWDRVB        P8.08
+ * LNA_PWR_CTRL  P8.09
+ * GP_LED0       P8.10
+ * GP_LED1       P8.11
+ * DACLDAC       P8.12
+ * DACBUSY       P8.13
+ * UART-4-TX-EN  P8.14
+ * UART-5-TX     P8.37
+ * UART-5-RX     P8.38
+ * UART-4-RX     P9.11
+ * UART-4-TX     P9.13
+ * DACSYNC       P9.17
+ * DACMOSI       P9.18
+ * I2C_SCL_CAPE  P9.19
+ * I2C_SDA_CAPE  P9.20
+ * DACMISO       P9.21
+ * DACSCLK       P9.22
+ * DACRESET      P9.23
+ * I2C_SCL_ESA   P9.24
+ * I2C_SDA_ESA   P9.26
+ *
+ */
+
+/ {
+	compatible = "ti,beaglebone-black";
+	part-number = "CAPE-POWER-01";
+	version = "00A0";
+
+	/* state the resources this cape uses */
+	exclusive-use =
+		/* the pin header uses */
+		"P8.07",    /* gpio:  gpio2_2 */
+		"P8.08",    /* gpio:  gpio2_3 */
+		"P8.09",    /* gpio:  gpio2_5 */
+		"P8.10",    /* gpio:  gpio2_4 */
+		"P8.11",    /* gpio:  gpio1_13 */
+		"P8.12",    /* gpio:  gpio1_12 */
+		"P8.13",    /* gpio:  gpio0_23 */
+		"P8.14",    /* PWM: PWM 2B */
+		"P8.15",    /* GPIO */
+		"P8.16",    /* GPIO */
+		"P8.17",    /* GPIO */
+		"P8.18",    /* GPIO */
+		"P8.19",    /* PWM: PWM2A */
+		"P8.27",    /* GPIO */
+		"P8.28",    /* GPIO */
+		"P8.29",    /* GPIO */
+		"P8.30",    /* GPIO */
+		"P8.31",    /* GPIO */
+		"P8.32",    /* GPIO */
+		"P8.33",    /* GPIO */
+		"P8.34",    /* GPIO */
+		"P8.35",    /* GPIO */
+		"P8.36",    /* GPIO */
+		"P8.37",    /* uart:  uart5_txd */
+		"P8.38",    /* uart:  uart5_rxd */
+		"P8.39",    /* GPIO */
+		"P8.40",    /* GPIO */
+		"P8.41",    /* GPIO */
+		"P8.42",    /* GPIO */
+		"P8.43",    /* GPIO */
+		"P8.44",    /* GPIO */
+		"P8.45",    /* GPIO */
+		"P8.46",    /* GPIO */
+
+		"P9.11",    /* uart:  uart4_rxd_mux2 */
+		"P9.12",    /* GPIO */
+		"P9.13",    /* uart:  uart4_txd_mux2 */
+		"P9.14",    /* PWM: PWM1A */
+		"P9.15",    /* GPIO */
+		"P9.16",    /* PWM: PWM1B */
+		"P9.17",    /* GPIO */
+		"P9.18",    /* GPIO */
+		/*"P9.19",*/    /* i2c:   I2C2_SCL */
+		/*"P9.20",*/    /* i2c:   I2C2_SDA */
+		"P9.21",    /* uart: uart2_txd*/
+		"P9.22",    /* uart: uart2_rxd */
+		"P9.23",    /* gpio:  gpio1_17 */
+		"P9.24",    /* i2c:   I2C1_SCL */
+		"P9.26",    /* i2c:   I2C1_SDA */
+		"P9.27",    /* GPIO */
+		"P9.28",    /* GPIO */
+		"P9.29",    /* GPIO */
+		"P9.30",    /* GPIO */
+		"P9.31",    /* GPIO */
+
+		"P9.39",    /* AIN0 */
+        "P9.40",    /* AIN1 */
+        "P9.37",    /* AIN2 */
+        "P9.38",    /* AIN3 */
+        "P9.33",    /* AIN4 */
+        "P9.36",    /* AIN5 */
+        "P9.35",    /* AIN6 */
+
+        "P9.42",    /* GPIO */
+
+		/* the hardware IP uses */
+		/* P9 Header */
+		"gpio0_31",
+		"ehrpwm1A", 
+		"gpio1_16",
+		"ehrpwm1B",
+		"gpio0_5",
+		"gpio0_4",
+		"gpio1_17",
+		"gpio3_21",
+		"gpio3_19",
+		"gpio3_17",
+		"gpio3_15",
+		"gpio3_16",
+		"gpio3_14",
+		"gpio0_7",
+		"uart4",
+		"tscadc",
+		"i2c1",
+
+		/* P8 Header */
+		"gpio2_2",
+		"gpio2_3",
+		"gpio2_5",
+		"gpio2_4",
+		"gpio1_13",
+		"gpio1_12",
+		"ehrpwm2",
+		"gpio0_26",
+		"gpio1_15",
+		"gpio1_14",
+		"gpio0_27",
+		"gpio2_1",
+		"ehrpwm2A",
+		"gpio2_24",
+		"gpio2_23",
+		"gpio2_25",
+		"gpio0_10",
+		"gpio0_11",
+		"gpio0_9",
+		"gpio2_17",
+		"gpio0_8",
+		"gpio2_16",
+		"uart5",
+		"gpio2_12",
+		"gpio2_13",
+		"gpio2_10",
+		"gpio2_11",
+		"gpio2_8",
+		"gpio2_9",
+		"gpio2_6",
+		"gpio2_7";
+
+
+
+	
+
+	fragment@0 {
+		target = <&am33xx_pinmux>;
+		__overlay__ {
+
+			pwm_P9_14: pinmux_pwm_P9_14_pins {
+                                pinctrl-single,pins = <0x048  0x6>; /* P9_14 (ZCZ ball U14) | MODE 6 */
+                        };
+
+            pwm_P9_16: pinmux_pwm_P9_16_pins {
+                                pinctrl-single,pins = <0x04c  0x6>; /* P9_16 (ZCZ ball T14) | MODE 6 */
+                        };
+
+            pwm_P8_13: pinmux_pwm_P8_13_pins {
+                                pinctrl-single,pins = <0x024  0x4>; /* P8_13 (ZCZ ball T10) | MODE 4 */
+                        };
+
+            pwm_P8_19: pinmux_pwm_P8_19_pins {
+                                pinctrl-single,pins = <0x020  0x4>; /* P8_19 (ZCZ ball U10) | MODE 4 */
+                        };
+
+			gpio_extra_pins: pinmux_gpio_extra_pins {
+				pinctrl-single,pins = <
+					0x078  0x2F     /* gpio0_31 | INPUT | MODE7 */
+					0x040  0x2F     /* gpio1_16 | INPUT | MODE7 */
+					0x15c  0x2F     /* gpio0_5 | INPUT | MODE7 */
+					0x158  0x2F     /* gpio0_4 | INPUT | MODE7 */
+					0x1ac  0x2F     /* gpio3_21 | INPUT | MODE7 */
+					0x198  0x2F     /* gpio3_16 | INPUT | MODE7 */
+					0x190  0x2F     /* gpio3_14 | INPUT | MODE7 */
+					0x164  0x2F     /* gpio0_7 | INPUT | MODE7 */
+					/*P8*/
+					0x090  0x2F     /* gpio2_2 | INPUT | MODE7 */
+					0x094  0x2F     /* gpio2_3 | INPUT | MODE7 */
+					0x09c  0x2F     /* gpio2_5 | INPUT | MODE7 */
+					0x098  0x2F     /* gpio2_4 | INPUT | MODE7 */
+
+				>;
+			};
+
+			gpio_power_pins: pinmux_gpio_power_pins {
+				pinctrl-single,pins = <
+					0x1a4  0x07     /* gpio3_19 | OUTPUT | MODE7 */
+					0x19c  0x07     /* gpio3_17 | OUTPUT | MODE7 */
+					0x194  0x07     /* gpio3_15 | OUTPUT | MODE7 */
+					/* P8 */
+					0x08c  0x07     /* gpio2_1 | OUTPUT | MODE7 */
+					0x0d8  0x07     /* gpio0_10 | OUTPUT | MODE7 */
+					0x0dc  0x07     /* gpio0_11 | OUTPUT | MODE7 */
+					0x0d4  0x07     /* gpio0_9 | OUTPUT | MODE7 */
+					0x0cc  0x07     /* gpio2_17 | OUTPUT | MODE7 */
+					0x0d0  0x07     /* gpio0_8 | OUTPUT | MODE7 */
+					0x0c8  0x07     /* gpio2_16 | OUTPUT | MODE7 */
+					0x0b8  0x07     /* gpio2_12 | OUTPUT | MODE7 */
+					0x0bc  0x07     /* gpio2_13 | OUTPUT | MODE7 */
+					0x0b0  0x07     /* gpio2_10 | OUTPUT | MODE7 */
+					0x0b4  0x07     /* gpio2_11 | OUTPUT | MODE7 */
+				
+				>;
+			};
+
+			gpio_RFSW_pins: pinmux_gpio_RFSW_pins {
+				pinctrl-single,pins = <
+					0x0e0  0x07     /* gpio2_22 | OUTPUT | MODE7 */
+					0x0e8  0x07     /* gpio2_24 | OUTPUT | MODE7 */
+					0x0e4  0x07     /* gpio2_23 | OUTPUT | MODE7 */
+					0x0ec  0x07     /* gpio2_25 | OUTPUT | MODE7 */
+					0x0a8  0x07     /* gpio2_8 | OUTPUT | MODE7 */
+					0x0ac  0x07     /* gpio2_9 | OUTPUT | MODE7 */
+					0x0a0  0x07     /* gpio2_6 | OUTPUT | MODE7 */
+					0x0a4  0x07     /* gpio2_7 | OUTPUT | MODE7 */
+				>;
+			};
+
+			gpio_power_good_pins: pinmux_gpio_power_good_pins {
+				pinctrl-single,pins = <
+					0x028  0x2F     /* gpio0_26 | INPUT | MODE7 */
+					0x03c  0x2F     /* gpio1_15 | INPUT | MODE7 */
+					0x038  0x2F     /* gpio1_14 | INPUT | MODE7 */
+					0x02c  0x2F     /* gpio0_27 | INPUT | MODE7 */
+				>;
+			};
+
+			gpio_status_pins: pinmux_gpio_status_pins {
+				pinctrl-single,pins = <
+				0x034 0x2F /* gpio1_13 | INPUT | MODE7 */
+				0x030 0x2F /* gpio1_12 | INPUT | MODE7 */
+					
+				>;
+			};
+
+			gpio_uart4_pins: pinmux_gpio_uart4_pins {
+				pinctrl-single,pins = <
+					0x028  0x07     /* gpio0_26 | OUTPUT | MODE7 */
+				>;
+			};
+			gpio_uart2_pins: pinmux_gpio_uart2_pins {
+				pinctrl-single,pins = <
+					0x044  0x07     /* gpio0_26 | OUTPUT | MODE7 */
+				>;
+			};
+
+			uart5_pins: pinmux_uart5_pins {
+				pinctrl-single,pins = <
+					0x0C0 0x04	    /* uart5_txd | MODE4 */
+					0x0C4 0x24	    /* uart5_rxd | MODE4 */
+				>;
+			};
+
+			uart4_pins: pinmux_uart4_pins {
+				pinctrl-single,pins = <
+					0x070 0x26	    /* uart4_rxd | MODE6 */
+					0x074 0x06	    /* uart4_txd | MODE6 */
+				>;
+			};
+
+			uart2_pins: pinmux_uart2_pins {
+				pinctrl-single,pins = <
+					0x154 0x21	    /* uart2_rxd | MODE1 */
+					0x154 0x01	    /* uart2_txd | MODE1 */
+				>;
+			};
+
+			
+			i2c1_esa_pins: pinmux_i2c1_esa_pins {
+				pinctrl-single,pins = <
+					0x184 0x73	    /* i2c1_scl, SLEWCTRL_SLOW | INPUT_PULLUP | MODE3 */
+					0x180 0x73	    /* i2c1_sda, SLEWCTRL_SLOW | INPUT_PULLUP | MODE3 */
+				>;
+			};
+		};
+	};
+	
+	fragment@1 {
+		target = <&ocp>;
+		__overlay__ {
+			extra_pinmux_helper {
+				compatible = "bone-pinmux-helper";
+				pinctrl-names = "default";
+				pinctrl-0 = <&gpio_extra_pins>;
+				status = "okay";
+			};
+
+			power_pinmux_helper {
+				compatible = "bone-pinmux-helper";
+				pinctrl-names = "default";
+				pinctrl-0 = <&gpio_power_pins>;
+				status = "okay";
+			};
+
+			RFSW_pinmux_helper {
+				compatible = "bone-pinmux-helper";
+				pinctrl-names = "default";
+				pinctrl-0 = <&gpio_RFSW_pins>;
+				status = "okay";
+			};
+
+			power_good_pinmux_helper {
+				compatible = "bone-pinmux-helper";
+				pinctrl-names = "default";
+				pinctrl-0 = <&gpio_power_good_pins>;
+				status = "okay";
+			};
+
+			status_pinmux_helper {
+				compatible = "bone-pinmux-helper";
+				pinctrl-names = "default";
+				pinctrl-0 = <&gpio_status_pins>;
+				status = "okay";
+			};
+
+			uart4_pinmux_helper {
+				compatible = "bone-pinmux-helper";
+				pinctrl-names = "default";
+				pinctrl-0 = <&gpio_uart4_pins>;
+				status = "okay";
+			};
+
+			uart2_pinmux_helper {
+				compatible = "bone-pinmux-helper";
+				pinctrl-names = "default";
+				pinctrl-0 = <&gpio_uart2_pins>;
+				status = "okay";
+			};
+		};
+	};
+
+	fragment@2 {
+		target = <&uart6>;      /* really uart5 */
+		__overlay__ {
+			pinctrl-names = "default";
+			pinctrl-0 = <&uart5_pins>;
+			status = "okay";			
+		};
+	};
+
+	fragment@3 {
+		target = <&uart5>;      /* really uart4 */
+		__overlay__ {
+			pinctrl-names = "default";
+			pinctrl-0 = <&uart4_pins>;
+			status = "okay";
+		};
+	};
+
+	
+
+	fragment@4 {
+		target = <&i2c1>;       /* i2c1 is numbered correctly */
+		__overlay__ {
+			status = "okay";
+			pinctrl-names = "default";
+			pinctrl-0 = <&i2c1_esa_pins>;
+
+			/* this is the configuration part */
+			clock-frequency = <100000>;     
+
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			/* MCP79410 RTC module */
+			rtc@68 {
+				compatible = "maxim,ds1338";
+				reg = <0x68>;
+			};
+		};
+	};
+
+	fragment@5 {
+		target = <&ocp>;
+		__overlay__ {
+			/* avoid stupid warning */
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			tscadc {
+				compatible = "ti,ti-tscadc";
+				reg = <0x44e0d000 0x1000>;
+
+				interrupt-parent = <&intc>;
+				interrupts = <16>;
+				ti,hwmods = "adc_tsc";
+				status = "okay";
+
+				adc {
+					ti,adc-channels = <0 1 2 3 4 5 6 7>;
+				};
+			};
+
+			test_helper: helper {
+				compatible = "bone-iio-helper";
+				vsense-name  = "AIN0", "AIN1", "AIN2", "AIN3", "AIN4", "AIN5", "AIN6", "AIN7";
+				vsense-scale = <100     100     100     100     100     100     100     100>;
+				status = "okay";
+			};
+		};
+	};
+
+	       fragment@6 {
+                target = <&epwmss0>;
+                __overlay__ {
+                        status = "okay";
+                };
+        };
+
+        fragment@7 {
+                target = <&ehrpwm0>;
+                __overlay__ {
+                        status = "okay";
+                };
+        };
+
+        fragment@8 {
+                target = <&ecap0>;
+                __overlay__ {
+                        status = "okay";
+                };
+        };
+
+        fragment@9 {
+                target = <&epwmss1>;
+                __overlay__ {
+                        status = "okay";
+                };
+        };
+  
+        fragment@10 {
+                target = <&ehrpwm1>;   
+                __overlay__ {
+                        status = "okay";
+                };
+        };
+   
+        fragment@11 {
+         	target = <&epwmss2>;
+                __overlay__ {
+                        status = "okay";
+   	        };
+        };
+
+                fragment@12 {
+                target = <&ehrpwm2>;
+                __overlay__ {
+                        status = "okay";
+                };
+        };
+
+        fragment@13 {
+                target = <&ecap2>;
+                __overlay__ {
+                        status = "okay";
+                };
+        };
+
+        fragment@14 {
+                target = <&ocp>;
+                __overlay__ {
+                        pwm_test_P9_14 {
+                                compatible	= "pwm_test";
+                                pwms            = <&ehrpwm1 0 500000 1>;
+                                pwm-names	= "PWM_P9_14";
+                            pinctrl-names	= "default";
+                            pinctrl-0   = <&pwm_P9_14>;
+                                enabled         = <1>;
+                                duty            = <0>;
+                                status          = "okay";
+                        };
+                };
+        };
+
+         fragment@15 {
+                target = <&ocp>;
+                __overlay__ {
+                        pwm_test_P9_16 {
+                                compatible	= "pwm_test";
+                                pwms            = <&ehrpwm1 1 500000 1>;
+                                pwm-names	= "PWM_P9_16";
+                            pinctrl-names	= "default";
+                            pinctrl-0   = <&pwm_P9_16>;
+                                enabled         = <1>;
+                                duty            = <0>;
+                                status          = "okay";
+                        };
+                };
+            };
+
+   fragment@16 {
+                target = <&ocp>;
+                __overlay__ {
+                        pwm_test_P8_13 {
+                                compatible	= "pwm_test";
+                                pwms            = <&ehrpwm2 1 500000 1>;
+                                pwm-names	= "PWM_P8_13";
+
+                                pinctrl-names   = "default";
+                                pinctrl-0	= <&pwm_P8_13>;
+
+                                enabled         = <1>;
+                                duty            = <0>;
+                                status          = "okay";
+                        };
+                };
+        };
+
+    fragment@17 {
+                target = <&ocp>;
+                __overlay__ {
+                        pwm_test_P8_19 {
+                                compatible	= "pwm_test";
+                                pwms            = <&ehrpwm2 0 500000 1>;
+                                pwm-names	= "PWM_P8_19";
+
+                                pinctrl-names   = "default";
+                                pinctrl-0	= <&pwm_P8_19>;
+
+                                enabled         = <1>;
+                                duty            = <0>;
+                                status          = "okay";
+                        };
+                };
+        };
+
+
+};

@@ -24,6 +24,8 @@ namespace SmashBros{
 		int pickCharacter(Character m, int p);
 		int attack(Attack a, Direction d,  int p);
 		int pickMap(Map a, int p);
+		void win(int p);
+		void test();
 
 		inline int getState();
 		inline void setState(State m);

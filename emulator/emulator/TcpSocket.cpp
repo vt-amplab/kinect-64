@@ -78,10 +78,12 @@ void Server::HandleClient(System::Object^ tcpClient)
 			int ec;
 			switch(message[0]){
 				case SmashBros::MCharacter:
+					Console::WriteLine("Picking character ");
 					ec = m_context->pickCharacter((SmashBros::Character)message[1], (int)message[3]);
 
 				break;
 				case SmashBros::MAttack:
+					Console::WriteLine("A: "+message[2]+" D: "+ message[1]);
 					ec = m_context->attack((SmashBros::Attack)message[2], (SmashBros::Direction)message[1], (int)message[3]);
 					Console::Write("Attack: "+message[2]+"   Move: "+message[1]);
 					if (checkErr(ec, "trying to fight in wrong state")){
@@ -89,10 +91,14 @@ void Server::HandleClient(System::Object^ tcpClient)
 					}
 				break;
 				case SmashBros::MMap:
+					Console::WriteLine("Picking map ");
 					ec = m_context->pickMap((SmashBros::Map)message[2], (int)message[3]);
 					if (checkErr(ec, "trying to change map in wrong state")){
 					
 					}
+				break;
+				case SmashBros::MHeartBeat:
+					Console::WriteLine("HeartBeat");
 				break;
 				default:
 					Console::WriteLine("INVALID MODE RECIEVED! : "+message[0]);
@@ -100,13 +106,18 @@ void Server::HandleClient(System::Object^ tcpClient)
 			}
 			reply[0] = 0;
 			reply[1] = m_context->getState();
-			clientStream->Write(reply, 0, 2);
+			if (clientStream->CanWrite){
+				clientStream->Write(reply, 0, 2);
+			}else{
+				Console::WriteLine("CLIENT DISCONNECTED");
+				break;
+			}
 
 		}
 		catch(...)
 		{
 			//a socket error has occured
-			Console::WriteLine("SOCKET ERROR");
+			Console::WriteLine("SOCKET ERROR!");
 			break;
 		}
 

@@ -6,7 +6,6 @@ using namespace System;
 using namespace System::Net::Sockets;
 using namespace System::Threading;
 
-//using namespace SmashBros;
 namespace SmashBros{
 class Game;
 }

@@ -1,0 +1,80 @@
+STEP 1.) - CREATE THE ENVIRONMENT VARIABLES
+
+Create the environment variables as shown below.
+
+The SLOTS variable may be /sys/devices/bone_capemgr.8/slots.
+
+# cd ~
+#
+# export SLOTS=/sys/devices/bone_capemgr.9/slots
+# export PINS=/sys/kernel/debug/pinctrl/44e10800.pinmux/pins
+# export PINMUX=/sys/kernel/debug/pinctrl/44e10800.pinmux/pinmux-pins
+#
+# echo "export SLOTS=/sys/devices/bone_capemgr.9/slots" >> ./.profile
+# echo "export PINS=/sys/kernel/debug/pinctrl/44e10800.pinmux/pins" >> ./.profile
+# echo "export PINMUX=/sys/kernel/debug/pinctrl/44e10800.pinmux/pinmux-pins" >> ./.profile
+
+Run the following to reload the environment variables if needed.
+# . ~/.profile
+
+STEP 2.) - MOVE AND COMPILE THE OVERLAY FILE
+
+Follow the steps below if you wrote your own .dts file, Otherwise skip to step 3.
+
+Copy your .dts file using
+# cp <file you wish to move> /lib/firmware/
+
+Compile the .dts to get a .dtbo.
+# dtc -O dtb -o <name of file changing .dts to .dtbo> -b 0 -@ <name of file>
+
+STEP 3.) - LOAD AND CHECK THE OVERLAY
+
+To load the overlay, enter the following.
+# echo <name of overlay partno> > $SLOTS
+
+The partno is specified in the .dts file.
+
+To see if the overlay was applied correctly, enter the following
+# cat $SLOTS
+
+The overlay should be listed following ff:P-O-L. If the L is not there, then the overlay
+is disabled.
+
+STEP 4.) - DISABLE AND LOAD OVERLAYS AT BOOT
+
+Some pins cannot be used if hdmi is enabled. You need to disable hdmi to use them.
+
+Create directory in /mnt called boot.
+# mkdir /mnt/boot/
+
+Mount mmcblk0p1 to the created directory.
+# mount /dev/mmcblk0p1 /mnt/boot/
+
+Open file named uEnv.txt for editing.
+# vim /mnt/boot/uEnv.txt
+
+If device is Rev C, skip to Rev B instructions.
+
+REV B.)
+
+To disable the hdmi video and sound, you need to add the following
+capemgr.disable_partno=BB-BONELT-HDMI,BB-BONELT-HDMIN
+
+To enable the cape you want to run at boot, add the following
+capemgr.enable_partno=<partno of cape you wish to load>
+
+Everything should be on one line. The line in the file should look like the following
+optargs=quiet drm.debug=7 capemgr.disable_partno=BB-BONELT-HDMI,BB-BONELT-HDMIN capemgr.enable_partno=<partno of cape you wish to load>
+
+Close and save the file.
+
+REV C.)
+
+Uncomment the line below by deleting the leading # character.
+optargs=capemgr.disable_partno=BB-BONELT-HDMI,BB-BONELT-HDMIN
+
+This allows you to use the hdmi video and sound pins for something else.
+Close and save the file.
+
+To add the cape on boot, type the following
+# add "CAPE=<partno of cape you wish to load>" to /etc/default/capemgr

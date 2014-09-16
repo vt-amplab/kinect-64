@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "emulator", "emulator\emulator.vcxproj", "{E1E493DE-215F-421F-B8E0-F0F96F736537}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "keyboard", "keyboard\keyboard.csproj", "{1CBAD27C-176B-4701-8836-C933416F1FEA}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cv", "Project1\Project1.vcxproj", "{8D6BA12F-8082-4E1E-99CF-41FF380C578F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,18 +31,18 @@ Global
 		{E1E493DE-215F-421F-B8E0-F0F96F736537}.Release|Win32.Build.0 = Release|Win32
 		{E1E493DE-215F-421F-B8E0-F0F96F736537}.Release|x64.ActiveCfg = Release|x64
 		{E1E493DE-215F-421F-B8E0-F0F96F736537}.Release|x64.Build.0 = Release|x64
-		{1CBAD27C-176B-4701-8836-C933416F1FEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1CBAD27C-176B-4701-8836-C933416F1FEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1CBAD27C-176B-4701-8836-C933416F1FEA}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{1CBAD27C-176B-4701-8836-C933416F1FEA}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{1CBAD27C-176B-4701-8836-C933416F1FEA}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{1CBAD27C-176B-4701-8836-C933416F1FEA}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{1CBAD27C-176B-4701-8836-C933416F1FEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1CBAD27C-176B-4701-8836-C933416F1FEA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1CBAD27C-176B-4701-8836-C933416F1FEA}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{1CBAD27C-176B-4701-8836-C933416F1FEA}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{1CBAD27C-176B-4701-8836-C933416F1FEA}.Release|Win32.ActiveCfg = Release|Any CPU
-		{1CBAD27C-176B-4701-8836-C933416F1FEA}.Release|x64.ActiveCfg = Release|Any CPU
+		{8D6BA12F-8082-4E1E-99CF-41FF380C578F}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{8D6BA12F-8082-4E1E-99CF-41FF380C578F}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{8D6BA12F-8082-4E1E-99CF-41FF380C578F}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{8D6BA12F-8082-4E1E-99CF-41FF380C578F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8D6BA12F-8082-4E1E-99CF-41FF380C578F}.Debug|Win32.Build.0 = Debug|Win32
+		{8D6BA12F-8082-4E1E-99CF-41FF380C578F}.Debug|x64.ActiveCfg = Debug|Win32
+		{8D6BA12F-8082-4E1E-99CF-41FF380C578F}.Release|Any CPU.ActiveCfg = Release|Win32
+		{8D6BA12F-8082-4E1E-99CF-41FF380C578F}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{8D6BA12F-8082-4E1E-99CF-41FF380C578F}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{8D6BA12F-8082-4E1E-99CF-41FF380C578F}.Release|Win32.ActiveCfg = Release|Win32
+		{8D6BA12F-8082-4E1E-99CF-41FF380C578F}.Release|Win32.Build.0 = Release|Win32
+		{8D6BA12F-8082-4E1E-99CF-41FF380C578F}.Release|x64.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

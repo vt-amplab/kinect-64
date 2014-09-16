@@ -1,7 +1,6 @@
 import cv2
 import time
-#import Adafruit_BBIO.UART as UART
-#import serial
+import socket
 
 
 class CharacterRecogniser:
@@ -11,25 +10,17 @@ class CharacterRecogniser:
         self.cap.set(4, 720)
 
     def send_lights(self, player, ready):
-        p = 1
-        # UART.setup("UART1")
-        # ser = serial.Serial(port="/dev/ttyO1", baudrate=9600)
-        # ser.close()
-        # ser.open()
-        # time.sleep(1)
-        #
-        # if ser.isOpen():
-        #     if player == 1:
-        #         if ready == 1:
-        #             ser.write("1R\n")
-        #         elif ready == 0:
-        #             ser.write("1N\n")
-        #     elif player == 2:
-        #         if ready == 1:
-        #             ser.write("2R\n")
-        #         elif ready == 0:
-        #             ser.write("2N\n")
-        # ser.close()
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        while True:
+            try:
+                time.sleep(.5)
+                s.connect(("192.168.1.8", 8889))
+                break
+            except Exception as e:
+                print e
+
+        s.send(player+ready)
+        s.close()
 
     def choose(self):
         ready1 = 0; ready2 = 0
@@ -64,12 +55,12 @@ class CharacterRecogniser:
                     #print len(approx)
                     # cv2.drawContours(img1, cnt, -1, (0, 255, 0), 5)
 
-                    if (len(approx) >= 13) and (len(approx) <= 15) and (area > 3220) and (area < 3600):
+                    if (len(approx) >= 14) and (len(approx) <= 16) and (area > 3220) and (area < 3600):
                         print "DK"
                         cv2.drawContours(img, [cnt], 0, (255, 0, 0), -1)
                         dk1 += 1
                         p1 += 1
-                    elif (len(approx) >= 11) and (len(approx) <= 16) and (area > 3350) and (area < 3800):
+                    elif (len(approx) >= 11) and (len(approx) <= 14) and (area > 3250) and (area < 3700):
                         print "Yoshi"
                         cv2.drawContours(img, [cnt], 0, (0, 0, 255), -1)
                         yoshi1 += 1
@@ -89,7 +80,7 @@ class CharacterRecogniser:
                         cv2.drawContours(img, [cnt], 0, (100, 100, 100), -1)
                         luigi1 += 1
                         p1 += 1
-                    elif (len(approx) >= 9) and (len(approx) <= 11) and (area > 2100) and (area < 2400):
+                    elif (len(approx) >= 10) and (len(approx) <= 11) and (area > 2100) and (area < 2400):
                         print "Kirby"
                         cv2.drawContours(img, [cnt], 0, (100, 0, 255), -1)
                         kirby1 += 1
@@ -99,7 +90,7 @@ class CharacterRecogniser:
                         cv2.drawContours(img, [cnt], 0, (100, 150, 255), -1)
                         ness1 += 1
                         p1 += 1
-                    elif (len(approx) >= 13) and (len(approx) <= 17) and (area > 5800) and (area < 6400):
+                    elif (len(approx) >= 12) and (len(approx) <= 17) and (area > 5800) and (area < 6400):
                         print "Samus"
                         cv2.drawContours(img, [cnt], 0, (0, 255, 0), -1)
                         samus1 += 1
@@ -109,7 +100,7 @@ class CharacterRecogniser:
                         cv2.drawContours(img, [cnt], 0, (255, 255, 255), -1)
                         mario1 += 1
                         p1 += 1
-                    elif (len(approx) >= 15) and (len(approx) <= 20) and (area > 2500) and (area < 2900):
+                    elif (len(approx) >= 15) and (len(approx) <= 20) and (area > 2500) and (area < 3050):
                         print "Fox"
                         cv2.drawContours(img, [cnt], 0, (255, 0, 255), -1)
                         fox1 += 1
@@ -119,7 +110,7 @@ class CharacterRecogniser:
                         cv2.drawContours(img, [cnt], 0, (255, 100, 255), -1)
                         jiggly1 += 1
                         p1 += 1
-                    elif (len(approx) >= 3) and (len(approx) <= 5) and (area > 3500) and (area < 3900):
+                    elif (len(approx) >= 3) and (len(approx) <= 5) and (area > 3500) and (area < 4500):
                         print "Link"
                         cv2.drawContours(img, [cnt], 0, (0, 0, 0), -1)
                         link1 += 1
@@ -134,12 +125,12 @@ class CharacterRecogniser:
                     # print len(approx)
                     # cv2.drawContours(img2, cnt, -1, (0, 255, 0), 3)
 
-                    if (len(approx) >= 13) and (len(approx) <= 15) and (area > 3220) and (area < 3600):
+                    if (len(approx) >= 14) and (len(approx) <= 16) and (area > 3220) and (area < 3600):
                         print "DK"
                         cv2.drawContours(img, [cnt], 0, (255, 0, 0), -1)
                         dk2 += 1
                         p2 += 1
-                    elif (len(approx) >= 11) and (len(approx) <= 16) and (area > 3350) and (area < 3800):
+                    elif (len(approx) >= 11) and (len(approx) <= 14) and (area > 3250) and (area < 3700):
                         print "Yoshi"
                         cv2.drawContours(img, [cnt], 0, (0, 0, 255), -1)
                         yoshi2 += 1
@@ -159,7 +150,7 @@ class CharacterRecogniser:
                         cv2.drawContours(img, [cnt], 0, (100, 100, 100), -1)
                         luigi2 += 1
                         p2 += 1
-                    elif (len(approx) >= 9) and (len(approx) <= 11) and (area > 2100) and (area < 2400):
+                    elif (len(approx) >= 10) and (len(approx) <= 11) and (area > 2100) and (area < 2400):
                         print "Kirby"
                         cv2.drawContours(img, [cnt], 0, (100, 0, 255), -1)
                         kirby2 += 1
@@ -169,7 +160,7 @@ class CharacterRecogniser:
                         cv2.drawContours(img, [cnt], 0, (100, 150, 255), -1)
                         ness2 += 1
                         p2 += 1
-                    elif (len(approx) >= 13) and (len(approx) <= 17) and (area > 5800) and (area < 6400):
+                    elif (len(approx) >= 12) and (len(approx) <= 17) and (area > 5800) and (area < 6400):
                         print "Samus"
                         cv2.drawContours(img, [cnt], 0, (0, 255, 0), -1)
                         samus2 += 1
@@ -179,7 +170,7 @@ class CharacterRecogniser:
                         cv2.drawContours(img, [cnt], 0, (255, 255, 255), -1)
                         mario2 += 1
                         p2 += 1
-                    elif (len(approx) >= 15) and (len(approx) <= 20) and (area > 2500) and (area < 2900):
+                    elif (len(approx) >= 15) and (len(approx) <= 20) and (area > 2500) and (area < 3050):
                         print "Fox"
                         cv2.drawContours(img, [cnt], 0, (255, 0, 255), -1)
                         fox2 += 1
@@ -189,7 +180,7 @@ class CharacterRecogniser:
                         cv2.drawContours(img, [cnt], 0, (255, 100, 255), -1)
                         jiggly2 += 1
                         p2 += 1
-                    elif (len(approx) >= 3) and (len(approx) <= 5) and (area > 3500) and (area < 3900):
+                    elif (len(approx) >= 3) and (len(approx) <= 5) and (area > 3500) and (area < 4500):
                         print "Link"
                         cv2.drawContours(img, [cnt], 0, (0, 0, 0), -1)
                         link2 += 1
@@ -199,7 +190,7 @@ class CharacterRecogniser:
 
             if (p1 > 20) and (not ready1):
                 ready1 = 1
-                self.send_lights(1, 1)
+                self.send_lights('1', 'R')
                 char = [luigi1, mario1, dk1, link1, samus1, falcon1, ness1, yoshi1, kirby1, fox1, pika1, jiggly1]
                 maxval = char[0]
                 index = 0
@@ -238,7 +229,7 @@ class CharacterRecogniser:
 
             if (p2 > 20) and (not ready2):
                 ready2 = 1
-                self.send_lights(2, 1)
+                self.send_lights('2', 'R')
                 char = [luigi2, mario2, dk2, link2, samus2, falcon2, ness2, yoshi2, kirby2, fox2, pika2, jiggly2]
                 maxval = char[0]
                 index = 0
