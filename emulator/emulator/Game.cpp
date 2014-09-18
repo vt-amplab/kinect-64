@@ -39,7 +39,7 @@ int Game::pickCharacter(SmashBros::Character m, int p)
 	if (m_p2.hasPicked() && m_p1.hasPicked()){
 		m_p1.resetPick();
 		m_p2.resetPick();
-		//m_state = PickMap;
+		m_state = PickMap;
 		m_p1.start();
 		pickMap(SmashBros::PeachCastle, 0);	 // hack
 	}

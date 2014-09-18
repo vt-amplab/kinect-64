@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30723.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "emulator", "emulator\emulator.vcxproj", "{E1E493DE-215F-421F-B8E0-F0F96F736537}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cv", "Project1\Project1.vcxproj", "{8D6BA12F-8082-4E1E-99CF-41FF380C578F}"
@@ -36,7 +38,7 @@ Global
 		{8D6BA12F-8082-4E1E-99CF-41FF380C578F}.Debug|Mixed Platforms.Build.0 = Debug|Win32
 		{8D6BA12F-8082-4E1E-99CF-41FF380C578F}.Debug|Win32.ActiveCfg = Debug|Win32
 		{8D6BA12F-8082-4E1E-99CF-41FF380C578F}.Debug|Win32.Build.0 = Debug|Win32
-		{8D6BA12F-8082-4E1E-99CF-41FF380C578F}.Debug|x64.ActiveCfg = Debug|Win32
+		{8D6BA12F-8082-4E1E-99CF-41FF380C578F}.Debug|x64.ActiveCfg = Debug|x64
 		{8D6BA12F-8082-4E1E-99CF-41FF380C578F}.Release|Any CPU.ActiveCfg = Release|Win32
 		{8D6BA12F-8082-4E1E-99CF-41FF380C578F}.Release|Mixed Platforms.ActiveCfg = Release|Win32
 		{8D6BA12F-8082-4E1E-99CF-41FF380C578F}.Release|Mixed Platforms.Build.0 = Release|Win32

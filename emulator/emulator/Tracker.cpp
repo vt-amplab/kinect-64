@@ -111,7 +111,7 @@ int Tracker::checkGameOver(){
 	int score;
 	Point2f first = cmpPics(scene, m_first, score);
 	static unsigned int hist = 0;
-	if (score < 20 && score > 0){
+	if (score <= 22 && score > 0){
 		hist |= 1;
 		hist = hist << 1;
 		if (hist < 0xf){

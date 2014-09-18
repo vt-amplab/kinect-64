@@ -15,7 +15,7 @@ int main(){
 	// cv::Mat a;
 	Tracker a;
 	Sleep(2000);
-	SmashBros::Game Game(Fighting);
+	SmashBros::Game Game;
 
 	// Game.test();
 	

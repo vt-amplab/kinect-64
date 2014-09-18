@@ -1,10 +1,16 @@
-﻿Build started 9/6/2014 9:37:45 PM.
-     1>Project "C:\Users\Conor\Documents\Visual Studio 2012\Projects\kinect-64\emulator\emulator\emulator.vcxproj" on node 2 (Build target(s)).
+﻿Build started 9/16/2014 11:59:03 PM.
+     1>Project "D:\Projects\kinect-64\emulator\emulator\emulator.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\x86_amd64\CL.exe /c /I"C:\Users\Conor\Documents\Visual Studio 2012\Projects\kinect-64\emulator\thirdparty\opencv\include" /AI"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.1\\" /AI"C:\Program Files (x86)\Windows Kits\8.0\References\CommonConfiguration\Neutral" /AI"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.1\Facades\\" /Zi /clr /nologo /W3 /WX- /O2 /D WIN32 /D NDEBUG /D _UNICODE /D UNICODE /EHa /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"x64\Release\emulator.pch" /Fo"x64\Release\\" /Fd"x64\Release\vc110.pdb" /TP /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.1\mscorlib.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.1\System.Data.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.1\System.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.1\System.Xml.dll" /errorReport:prompt main.cpp
-         main.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /ID:\Programs\OpenCV\opencv\build\include /ID:\Programs\OpenCV\opencv\build\x64\vc12\include /AI"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.1\\" /AI"C:\Program Files (x86)\Windows Kits\8.1\References\CommonConfiguration\Neutral" /AI"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.1\Facades\\" /Zi /clr /nologo /W3 /WX- /O2 /D WIN32 /D NDEBUG /D _UNICODE /D UNICODE /EHa /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"x64\Release\emulator.pch" /Fo"x64\Release\\" /Fd"x64\Release\vc120.pdb" /TP /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.1\mscorlib.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.1\System.Data.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.1\System.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.1\System.Xml.dll" /errorReport:prompt /clr:nostdlib Tracker.cpp
+         Tracker.cpp
+     1>Tracker.cpp(1): warning C4627: '#include <string>': skipped when looking for precompiled header use
+                 Add directive to 'stdafx.h' or rebuild precompiled header
+     1>Tracker.cpp(85): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
+     1>Tracker.cpp(125): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
+     1>Tracker.cpp(126): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
+     1>d:\projects\kinect-64\emulator\emulator\tracker.cpp(78): warning C4700: uninitialized local variable 'match_method' used
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Conor\Documents\Visual Studio 2012\Projects\kinect-64\emulator\x64\Release\emulator.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:"C:\Users\Conor\Documents\Visual Studio 2012\Projects\kinect-64\emulator\x64\Release" /LIBPATH:"C:\Users\Conor\Documents\Visual Studio 2012\Projects\kinect-64\emulator\thirdparty\opencv\x64\vc11\lib" opencv_core249.lib user32.lib opencv_imgproc249.lib opencv_highgui249.lib Gdi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Conor\Documents\Visual Studio 2012\Projects\kinect-64\emulator\x64\Release\emulator.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /FIXED:NO /NXCOMPAT /MACHINE:X64 x64\Release\app.res
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"D:\Projects\kinect-64\emulator\x64\Release\emulator.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:D:\Programs\OpenCV\opencv\build\x64\vc12\lib /LIBPATH:"D:\Projects\kinect-64\emulator\x64\Release" opencv_core249.lib user32.lib opencv_imgproc249.lib opencv_highgui249.lib Gdi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\Projects\kinect-64\emulator\x64\Release\emulator.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /FIXED:NO /NXCOMPAT /MACHINE:X64 x64\Release\app.res
          x64\Release\AssemblyInfo.obj
          x64\Release\Game.obj
          x64\Release\main.obj
@@ -14,9 +20,9 @@
          x64\Release\TcpSocket.obj
          x64\Release\Tracker.obj
          "x64\Release\.NETFramework,Version=v4.5.1.AssemblyAttributes.obj"
-         emulator.vcxproj -> C:\Users\Conor\Documents\Visual Studio 2012\Projects\kinect-64\emulator\x64\Release\emulator.exe
-     1>Done Building Project "C:\Users\Conor\Documents\Visual Studio 2012\Projects\kinect-64\emulator\emulator\emulator.vcxproj" (Build target(s)).
+         emulator.vcxproj -> D:\Projects\kinect-64\emulator\x64\Release\emulator.exe
+     1>Done Building Project "D:\Projects\kinect-64\emulator\emulator\emulator.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:02.34
+Time Elapsed 00:00:01.41
