@@ -66,6 +66,7 @@ namespace GestureController
                 bool success = false;
                 while (!success)
                 {
+                    Thread.Sleep(1000);
                     _client = new Socket(_remoteEP.AddressFamily,
                         SocketType.Stream, ProtocolType.Tcp);
 
@@ -113,6 +114,10 @@ namespace GestureController
             catch (SocketException se)
             {
                 Logger.Debug("Caught serial exception", se);
+            }
+            catch (ObjectDisposedException exception)
+            {
+                Logger.Error("Exception for object disposed", exception);
             }
         }
 
@@ -184,6 +189,10 @@ namespace GestureController
                 Logger.Debug("Exception encountered", e);
                 ConnectToClient();
             }
+            catch (ObjectDisposedException e)
+            {
+                Logger.Debug("Caught a disposed exception in Connect Callback");
+            }
         }
 
         private void SendCallback(IAsyncResult ar)
@@ -199,6 +208,10 @@ namespace GestureController
             {
                 Logger.Debug("Exception encountered", e);
                 ConnectToClient();
+            }
+            catch (ObjectDisposedException e)
+            {
+                Logger.Debug("Caught a disposed exception in Connect Callback");
             }
         }
     }

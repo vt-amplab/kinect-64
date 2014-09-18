@@ -154,7 +154,7 @@ namespace GestureController
 
                             if (communicator.IsConnected)
                             {
-                                _Status.Text = "Connected to " + ServerIP.Text + ":" + ServerPort.Text;
+                                //_Status.Text = "Connected to " + ServerIP.Text + ":" + ServerPort.Text;
                                 Logger.Info("Successfully connected to server");
                             }
                             else
@@ -177,6 +177,10 @@ namespace GestureController
                 catch (FormatException exception)
                 {
                     Logger.Fatal("Format Exception while connecting to server", exception);
+                }
+                catch (InvalidOperationException exception)
+                {
+                    Logger.Fatal("Exception in thread", exception);
                 }
                 catch (Exception exception)
                 {
